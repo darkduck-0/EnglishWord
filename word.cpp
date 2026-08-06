@@ -1,17 +1,18 @@
 #include "word.h"
 
 const static uint64_t levelSwitch[11] = {
+    10,
+    30,
     60,
+    300,
     600,
-    3600,
+    30 * 60,
+    1 * 3600,
+    2 * 3600,
     4 * 3600,
     24 * 3600,
     3 * 24 * 3600,
-    7 * 24 * 3600,
-    15 * 24 * 3600,
-    30 * 24 * 3600,
-    60 * 24 * 3600,
-    120 * 24 * 3600};
+};
 
 Word::Word(std::string e, std::string c, uint64_t ct = 0,
            int16_t l = 0, uint64_t nt = 0)

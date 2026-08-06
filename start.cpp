@@ -9,6 +9,7 @@
 std::random_device rd;
 std::vector<Word> wordTable;
 std::vector<Word *> New, Old;
+std::string fileName;
 uint right;
 
 class Settings
@@ -25,14 +26,13 @@ auto compare = [](Word *x, Word *y)
 int load()
 {
     std::cout << "The file name: ";
-    std::string name;
-    std::cin >> name;
-    std::ifstream file(name);
-    if (name == "/back")
+    std::cin >> fileName;
+    std::ifstream file(fileName);
+    if (fileName == "/back")
         return -1;
     if (!file.is_open())
     {
-        std::cout << "can not open file: " << name << " .\n";
+        std::cout << "can not open file: " << fileName << " .\n";
         return 1;
     }
     std::string eng, chi;
@@ -74,6 +74,7 @@ int init()
     {
         Old.push_back(New.back());
         New.pop_back();
+        Old.front()->initTime();
     }
     std::make_heap(Old.begin(), Old.end(), compare);
     return 0;
@@ -85,6 +86,7 @@ int randit()
     right = rd() % (setting.cdw);
     qus.clear();
     qus.emplace_back(&Old.front()->chi);
+    // 这里正确选项会重复
     for (uint i = 1; i < setting.cdw && i < wordTable.size(); ++i)
     {
         qus.emplace_back(&(wordTable[i].chi));
@@ -103,6 +105,7 @@ int randit()
 
 int choise(uint real, uint chs, bool init)
 {
+    // 把这个函数的一些变量移动到外部，改得简单些
     --chs;
     static uint count;
     if (init)
@@ -125,7 +128,7 @@ int choise(uint real, uint chs, bool init)
 
 int collate()
 {
-    Old[0]->updateTime();
+    Old.front()->updateTime();
     std::pop_heap(Old.begin(), Old.end());
     std::push_heap(Old.begin(), Old.end(), compare);
     uint64_t now = time(0);
@@ -138,8 +141,23 @@ int collate()
         }
         Old.push_back(New.back());
         New.pop_back();
-        std::pop_heap(Old.begin(), Old.end());
+        Old.back()->initTime();
         std::push_heap(Old.begin(), Old.end(), compare);
+    }
+    return 0;
+}
+
+int save()
+{
+    std::ofstream file(fileName);
+    if (!file.is_open())
+    {
+        std::cout << "can not open file: " << fileName << std::endl;
+        return -2;
+    }
+    for (auto &i : wordTable)
+    {
+        file << i;
     }
     return 0;
 }
@@ -165,7 +183,7 @@ int main()
 {
     if (init() == -1)
         return 0;
-
+    save();
     while (true)
     {
         randit();
@@ -187,6 +205,7 @@ int main()
         }
         if (collate() == -1)
         {
+            save();
             return 0;
         }
     }
