@@ -16,7 +16,8 @@ public:
     uint64_t nextTime;
 
     Word(std::string, std::string, uint64_t, int16_t, uint64_t);
-    void updateTime(void);
+    void initTime();
+    void updateTime();
     void write(std::ofstream &);
     void read(std::ifstream &);
     bool operator<(const Word &other) const;

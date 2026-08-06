@@ -17,6 +17,12 @@ Word::Word(std::string e, std::string c, uint64_t ct = 0,
            int16_t l = 0, uint64_t nt = 0)
     : eng(e), chi(c), currentTime(ct), level(l), nextTime(nt) {}
 
+void Word::initTime()
+{
+    currentTime = time(0);
+    nextTime = currentTime;
+}
+
 void Word::updateTime()
 {
     currentTime = time(0);

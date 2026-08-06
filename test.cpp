@@ -1,11 +1,14 @@
-#include "word.cpp"
-#include <vector>
-#include <string>
+#include <ctime>
+#include <iostream>
 
-std::vector<Word> v;
 int main()
 {
-    std::string a = "hello", b = "你好";
-    Word n(a, b);
-    v.push_back(n);
+    uint64_t now = time(0);
+    std::cout << now << std::endl;
+    std::cout << "please wait for 15 seconds...\n";
+    if (getchar())
+    {
+        now = time(0);
+        std::cout << now << std::endl;
+    }
 }

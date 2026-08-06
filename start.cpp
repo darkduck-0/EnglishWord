@@ -93,15 +93,17 @@ int randit()
     qus[right] = qus[0];
     qus[0] = t;
     std::cout << Old.front()->eng << std::endl;
-    for (auto &i : qus)
+    for (int i = 0; i < qus.size(); ++i)
     {
-        std::cout << *i << std::endl;
+        std::cout << i + 1 << '\t';
+        std::cout << *qus[i] << std::endl;
     }
     return 0;
 }
 
 int choise(uint real, uint chs, bool init)
 {
+    --chs;
     static uint count;
     if (init)
         count = 0;
@@ -136,6 +138,8 @@ int collate()
         }
         Old.push_back(New.back());
         New.pop_back();
+        std::pop_heap(Old.begin(), Old.end());
+        std::push_heap(Old.begin(), Old.end(), compare);
     }
     return 0;
 }
@@ -162,19 +166,12 @@ int main()
     if (init() == -1)
         return 0;
 
-    // debug
-    display("wordTable:", wordTable);
-    // debug
-
     while (true)
     {
-        // debug
-        display("Old:", Old);
-        display("New:", New);
-        // debug
-
         randit();
-        std::cout << "right ans: " << right << std::endl;
+        // debug
+        std::cout << "Correct option: " << right + 1 << std::endl;
+        // debug
         uint chs;
         std::cin >> chs;
         if (choise(right, chs, 1) == 1)
@@ -183,6 +180,10 @@ int main()
             std::cin >> chs;
             if (choise(right, chs, 0) == 1)
                 goto chos;
+        }
+        else
+        {
+            std::cout << "right, level: " << Old.front()->level << std::endl;
         }
         if (collate() == -1)
         {
