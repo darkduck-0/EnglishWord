@@ -3,12 +3,16 @@
 
 #include <iostream>
 #include <fstream>
-#include "word.h"
+#include "word.cpp"
 #include <vector>
 
-int saveToNew(std::vector<Word> &v);
-int saveToExist(std::vector<Word> &v);
-int readFromFile(std::vector<Word> &v);
-int readFromKey(std::vector<Word> &v);
+int saveToNew();
+int saveToExist();
+int readFromFile();
+int readFromKey();
+
+std::vector<Word> wordTable;
 
 #endif
+
+// 我迟早要tm把 word.cpp 改为word.h

@@ -1,6 +1,6 @@
 #include "typeIn.h"
 
-int saveToNew(std::vector<Word> &v)
+int saveToNew()
 {
     std::cout << "The file name: ";
     std::string name;
@@ -13,12 +13,12 @@ int saveToNew(std::vector<Word> &v)
     }
     ifile.close();
     std::ofstream file(name, std::ios::binary);
-    for (auto &i : v)
+    for (auto &i : wordTable)
         i.write(file);
     return 0;
 }
 
-int saveToExist(std::vector<Word> &v)
+int saveToExist()
 {
     std::cout << "The file name: ";
     std::string name;
@@ -29,12 +29,12 @@ int saveToExist(std::vector<Word> &v)
         std::cout << "error\n";
         return -1;
     }
-    for (auto &i : v)
+    for (auto &i : wordTable)
         i.write(file);
     return 0;
 }
 
-int readFromFile(std::vector<Word> &v)
+int readFromFile()
 {
     std::cout << "The file address: ";
     std::string address;
@@ -51,12 +51,12 @@ int readFromFile(std::vector<Word> &v)
     while (!file.eof())
     {
         file >> eng >> chi;
-        v.emplace_back(eng, chi);
+        wordTable.emplace_back(eng, chi);
     }
     return 0;
 }
 
-int readFromKey(std::vector<Word> &v)
+int readFromKey()
 {
     std::cout << "type /end to stop\n";
     std::string eng, chi;
@@ -66,13 +66,13 @@ int readFromKey(std::vector<Word> &v)
         if (eng == "/end")
             break;
         std::cin >> chi;
-        v.emplace_back(eng, chi);
+        wordTable.emplace_back(eng, chi);
     }
     // debug
-    for (int i = 0; i < v.size(); ++i)
+    for (int i = 0; i < wordTable.size(); ++i)
     {
         std::cout << i << "\t";
-        std::cout << v[i];
+        std::cout << wordTable[i];
     }
     // debug
     return 0;
@@ -80,16 +80,8 @@ int readFromKey(std::vector<Word> &v)
 
 int main()
 {
-    std::vector<Word> v;
-    readFromFile(v);
-    // debug
-    for (int i = 0; i < v.size(); ++i)
-    {
-        std::cout << i << "\t";
-        std::cout << v[i];
-    }
-    // debug
-    saveToNew(v);
+    readFromFile();
+    saveToNew();
 
     return 0;
 }

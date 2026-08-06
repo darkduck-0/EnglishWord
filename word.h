@@ -3,6 +3,7 @@
 
 #include <string>
 #include <iostream>
+#include <fstream>
 #include <ctime>
 
 class Word
@@ -23,6 +24,8 @@ public:
 
 private:
     friend std::ostream &operator<<(std::ostream &os, const Word &p);
+    friend std::ofstream &operator<<(std::ofstream &os, const Word &p);
+    friend std::ifstream &operator>>(std::ifstream &is, Word &p);
 };
 
 #endif

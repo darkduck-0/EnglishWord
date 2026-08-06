@@ -23,26 +23,26 @@ void Word::updateTime()
     nextTime = currentTime + levelSwitch[level];
 }
 
-void Word::write(std::ofstream &file)
+void Word::write(std::ofstream &os)
 {
-    file.write(eng.data(), eng.size());
-    file.write("\t", 1);
-    file.write(chi.data(), chi.size());
-    file.write("\t", 1);
-    file.write(reinterpret_cast<const char *>(&currentTime), sizeof(currentTime));
-    file.write(reinterpret_cast<const char *>(&level), sizeof(level));
-    file.write(reinterpret_cast<char *>(&nextTime), sizeof(nextTime));
-    file.write("\n", 1);
+    os.write(eng.data(), eng.size());
+    os.write("\t", 1);
+    os.write(chi.data(), chi.size());
+    os.write("\t", 1);
+    os.write(reinterpret_cast<const char *>(&currentTime), sizeof(currentTime));
+    os.write(reinterpret_cast<const char *>(&level), sizeof(level));
+    os.write(reinterpret_cast<const char *>(&nextTime), sizeof(nextTime));
+    os.write("\n", 1);
 }
 
-void Word::read(std::ifstream &file)
+void Word::read(std::ifstream &os)
 {
-    file >> eng;
-    file >> chi;
-    file.ignore();
-    file.read(reinterpret_cast<char *>(&currentTime), sizeof(currentTime));
-    file.read(reinterpret_cast<char *>(&level), sizeof(level));
-    file.read(reinterpret_cast<char *>(&nextTime), sizeof(nextTime));
+    os >> eng;
+    os >> chi;
+    os.ignore();
+    os.read(reinterpret_cast<char *>(&currentTime), sizeof(currentTime));
+    os.read(reinterpret_cast<char *>(&level), sizeof(level));
+    os.read(reinterpret_cast<char *>(&nextTime), sizeof(nextTime));
 }
 
 bool Word::operator<(const Word &other) const
@@ -57,7 +57,31 @@ bool Word::operator>(const Word &other) const
 
 std::ostream &operator<<(std::ostream &os, const Word &p)
 {
-    os << p.eng << ": " << p.chi << "\n\tlastTime: " << p.currentTime << " level: " << p.level << " nextTime: " << p.nextTime << '\n';
+    os << p.eng << '\t';
+    os << p.chi << '\t';
+    os << p.currentTime << '\t';
+    os << p.level << '\t';
+    os << p.nextTime << '\n';
     return os;
+}
+
+std::ofstream &operator<<(std::ofstream &os, const Word &p)
+{
+    os << p.eng << '\t' << p.chi << '\t';
+    os.write(reinterpret_cast<const char *>(&p.currentTime), sizeof(p.currentTime));
+    os.write(reinterpret_cast<const char *>(&p.level), sizeof(p.level));
+    os.write(reinterpret_cast<const char *>(&p.nextTime), sizeof(p.nextTime));
+    os << '\n';
+    return os;
+}
+
+std::ifstream &operator>>(std::ifstream &is, Word &p)
+{
+    is >> p.eng >> p.chi;
+    is.ignore();
+    is.read(reinterpret_cast<char *>(&p.currentTime), sizeof(p.currentTime));
+    is.read(reinterpret_cast<char *>(&p.level), sizeof(p.level));
+    is.read(reinterpret_cast<char *>(&p.nextTime), sizeof(p.nextTime));
+    return is;
 }
 // 把 currentTime 改名为 lastTime
