@@ -1,12 +1,6 @@
-#include <iostream>
-#include <fstream>
-#include "word.cpp"
-#include <vector>
+#include "typeIn.h"
 
-int saveToExist(std::vector<Word>);
-int saveToNew(std::vector<Word>);
-
-int saveToNew(std::vector<Word> v)
+int saveToNew(std::vector<Word> &v)
 {
     std::cout << "The file name: ";
     std::string name;
@@ -24,7 +18,7 @@ int saveToNew(std::vector<Word> v)
     return 0;
 }
 
-int saveToExist(std::vector<Word> v)
+int saveToExist(std::vector<Word> &v)
 {
     std::cout << "The file name: ";
     std::string name;

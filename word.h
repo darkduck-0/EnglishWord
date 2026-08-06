@@ -1,3 +1,6 @@
+#ifndef word
+#define word
+
 #include <string>
 #include <iostream>
 #include <ctime>
@@ -21,3 +24,5 @@ public:
 private:
     friend std::ostream &operator<<(std::ostream &os, const Word &p);
 };
+
+#endif
