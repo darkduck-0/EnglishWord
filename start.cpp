@@ -6,11 +6,21 @@
 #include <random>
 #include <ctime>
 
+enum sign
+{
+    UERR,
+    FERR,
+    QUIT,
+    FINI,
+    REBOOT
+};
+
 std::random_device rd;
 std::vector<Word> wordTable;
 std::vector<Word *> New, Old;
 std::string fileName;
 uint right;
+uint errCount;
 
 class Settings
 {
@@ -29,39 +39,38 @@ int load()
     std::cin >> fileName;
     std::ifstream file(fileName);
     if (fileName == "/back")
-        return -1;
+        return QUIT;
     if (!file.is_open())
     {
         std::cout << "can not open file: " << fileName << " .\n";
-        return 1;
+        return REBOOT;
     }
     std::string eng, chi;
     uint64_t cTime, nTime;
     uint16_t level;
-    int count = 0;
     while (file >> eng >> chi)
     {
-        ++count;
         file.ignore();
         file.read(reinterpret_cast<char *>(&cTime), sizeof(cTime));
         file.read(reinterpret_cast<char *>(&level), sizeof(level));
         file.read(reinterpret_cast<char *>(&nTime), sizeof(nTime));
         wordTable.emplace_back(eng, chi, cTime, level, nTime);
     }
-    return count;
+    return FINI;
 }
 
 int init()
 {
-    if (load() < setting.cdw)
+    if (load() < setting.cdw) // this will be deleted.
     {
         std::cout << "To few words.\n";
-        return -1;
+        return UERR;
     }
+    // delete to here.
     if (wordTable.empty())
     {
         std::cout << "The file is empty.\n";
-        return -1;
+        return UERR;
     }
     for (auto &i : wordTable)
     {
@@ -77,7 +86,7 @@ int init()
         Old.front()->initTime();
     }
     std::make_heap(Old.begin(), Old.end(), compare);
-    return 0;
+    return FINI;
 }
 
 int randit()
@@ -86,7 +95,9 @@ int randit()
     right = rd() % (setting.cdw);
     qus.clear();
     qus.emplace_back(&Old.front()->chi);
-    // 这里正确选项会重复
+    // bug: 重复的正确选项
+    // 暂时不修改，等加入大辞典后，从词典抽词。使用字典检测碰撞。
+    // 后续加入形近字选项。
     for (uint i = 1; i < setting.cdw && i < wordTable.size(); ++i)
     {
         qus.emplace_back(&(wordTable[i].chi));
@@ -100,9 +111,16 @@ int randit()
         std::cout << i + 1 << '\t';
         std::cout << *qus[i] << std::endl;
     }
+    ++right;
+    return FINI;
+}
+
+int samilar()
+{
     return 0;
 }
 
+/*
 int choise(uint real, uint chs, bool init)
 {
     // 把这个函数的一些变量移动到外部，改得简单些
@@ -125,6 +143,33 @@ int choise(uint real, uint chs, bool init)
     w.level = w.level < 0 ? 0 : w.level;
     return -1;
 }
+*/
+
+int choise()
+{
+    uint cho;
+    std::cin >> cho;
+    if (right == cho)
+    {
+        std::cout << "corract!\n";
+        Old.front()->upGrade();
+        return FINI;
+    }
+    ++errCount;
+    if (Old.front()->deGrade() || errCount >= setting.men)
+    {
+        std::cout << "wrong!\n";
+        // debug
+        std::cout << *Old.front();
+        // debug
+        // pause();
+        return UERR;
+    }
+    else
+    {
+        return REBOOT;
+    }
+}
 
 int collate()
 {
@@ -132,19 +177,20 @@ int collate()
     std::pop_heap(Old.begin(), Old.end());
     std::push_heap(Old.begin(), Old.end(), compare);
     uint64_t now = time(0);
-    if (now < Old[0]->nextTime)
+    if (now < Old.front()->nextTime)
     {
         if (New.empty())
         {
             std::cout << "No task now.\n";
-            return -1;
+            save(); // do i need this line?
+            return QUIT;
         }
         Old.push_back(New.back());
         New.pop_back();
-        Old.back()->initTime();
+        Old.back()->initTime(); // what will happen while i delete this line?
         std::push_heap(Old.begin(), Old.end(), compare);
     }
-    return 0;
+    return FINI;
 }
 
 int save()
@@ -179,31 +225,37 @@ void display(const std::string name, std::vector<Word *> &v)
 }
 // debug
 
+#ifndef nobug
 int main()
 {
     if (init() == -1)
         return 0;
-    save();
     while (true)
     {
         randit();
         // debug
         std::cout << "Correct option: " << right + 1 << std::endl;
         // debug
-        uint chs;
-        std::cin >> chs;
-        if (choise(right, chs, 1) == 1)
+        errCount = 0;
+    rechoose:
+        switch (choise())
         {
-        chos:
-            std::cin >> chs;
-            if (choise(right, chs, 0) == 1)
-                goto chos;
+        case FINI:
+            // debug
+            std::cout << Old.front()->level << std::endl;
+            // debug
+            break;
+        case UERR:
+            // debug
+            std::cout << Old.front()->level << std::endl;
+            // debug
+            break;
+        case REBOOT:
+            goto rechoose;
+        default:
+            break;
         }
-        else
-        {
-            std::cout << "right, level: " << Old.front()->level << std::endl;
-        }
-        if (collate() == -1)
+        if (collate() == QUIT)
         {
             save();
             return 0;
@@ -211,5 +263,7 @@ int main()
     }
     return 0;
 }
+#endif
+
 // load 返回 读到多少个word
 // choise 简化操作，删除静态变量，删除初始化标签。

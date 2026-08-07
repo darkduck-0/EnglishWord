@@ -1,6 +1,6 @@
 #include "word.h"
-
-const static uint64_t levelSwitch[11] = {
+#define MAXLEVEL 11
+const static uint64_t levelSwitch[MAXLEVEL] = {
     10,
     30,
     60,
@@ -22,6 +22,22 @@ void Word::initTime()
 {
     currentTime = time(0);
     nextTime = currentTime;
+}
+
+void Word::upGrade()
+{
+    ++level;
+    level = level > MAXLEVEL ? MAXLEVEL : level;
+    updateTime(); // 要不要这一行？
+}
+
+int Word::deGrade()
+{
+    --level;
+    bool result = level < 0;
+    level = result ? 0 : level;
+    updateTime(); // 要不要这一行？
+    return result;
 }
 
 void Word::updateTime()

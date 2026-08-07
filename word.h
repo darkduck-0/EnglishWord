@@ -18,6 +18,8 @@ public:
     Word(std::string, std::string, uint64_t, int16_t, uint64_t);
     void initTime();
     void updateTime();
+    void upGrade();
+    int deGrade();
     void write(std::ofstream &);
     void read(std::ifstream &);
     bool operator<(const Word &other) const;
