@@ -61,7 +61,7 @@ int load()
 
 int init()
 {
-    if (load() < setting.cdw) // this will be deleted.
+    if (wordTable.size() < setting.cdw) // this will be deleted.
     {
         std::cout << "To few words.\n";
         return UERR;
@@ -171,6 +171,21 @@ int choise()
     }
 }
 
+int save()
+{
+    std::ofstream file(fileName);
+    if (!file.is_open())
+    {
+        std::cout << "can not open file: " << fileName << std::endl;
+        return FERR;
+    }
+    for (auto &i : wordTable)
+    {
+        file << i;
+    }
+    return 0;
+}
+
 int collate()
 {
     Old.front()->updateTime();
@@ -193,21 +208,6 @@ int collate()
     return FINI;
 }
 
-int save()
-{
-    std::ofstream file(fileName);
-    if (!file.is_open())
-    {
-        std::cout << "can not open file: " << fileName << std::endl;
-        return -2;
-    }
-    for (auto &i : wordTable)
-    {
-        file << i;
-    }
-    return 0;
-}
-
 // debug
 void display(const std::string name, std::vector<Word> &v)
 {
@@ -228,13 +228,32 @@ void display(const std::string name, std::vector<Word *> &v)
 #ifndef nobug
 int main()
 {
-    if (init() == -1)
+reload:
+    switch (load())
+    {
+    case QUIT:
         return 0;
+    case REBOOT:
+        goto reload;
+    case FINI:
+    default:
+        break;
+    }
+
+    switch (init())
+    {
+    case UERR:
+        goto reload;
+    case FINI:
+    default:
+        break;
+    }
+
     while (true)
     {
         randit();
         // debug
-        std::cout << "Correct option: " << right + 1 << std::endl;
+        std::cout << "Correct option: " << right << std::endl;
         // debug
         errCount = 0;
     rechoose:
@@ -242,12 +261,12 @@ int main()
         {
         case FINI:
             // debug
-            std::cout << Old.front()->level << std::endl;
+            std::cout << "level: " << Old.front()->level << std::endl;
             // debug
             break;
         case UERR:
             // debug
-            std::cout << Old.front()->level << std::endl;
+            std::cout << "level: " << Old.front()->level << std::endl;
             // debug
             break;
         case REBOOT:
@@ -265,5 +284,4 @@ int main()
 }
 #endif
 
-// load 返回 读到多少个word
 // choise 简化操作，删除静态变量，删除初始化标签。
