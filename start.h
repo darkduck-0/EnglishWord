@@ -16,7 +16,7 @@ public:
 int start(std::vector<Word>);
 int load(std::vector<Word>);
 int init();
-int randit(std::vector<std::string *> &qus, uint &right);
+int ranopt(std::vector<std::string *> &qus, uint &right);
 int choise(uint real, uint chs, bool init);
 int collate();
 int exit();

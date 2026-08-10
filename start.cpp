@@ -89,7 +89,7 @@ int init()
     return FINI;
 }
 
-int randit()
+int ranopt()
 {
     static std::vector<std::string *> qus;
     right = rd() % (setting.cdw);
@@ -119,31 +119,6 @@ int samilar()
 {
     return 0;
 }
-
-/*
-int choise(uint real, uint chs, bool init)
-{
-    // 把这个函数的一些变量移动到外部，改得简单些
-    --chs;
-    static uint count;
-    if (init)
-        count = 0;
-    Word &w = wordTable.front();
-    if (real == chs)
-    {
-        ++Old.front()->level;
-        return 0;
-    }
-    ++count;
-    --w.level;
-    if (count <= setting.men && w.level >= 0)
-    {
-        return 1;
-    }
-    w.level = w.level < 0 ? 0 : w.level;
-    return -1;
-}
-*/
 
 int choise()
 {
@@ -251,7 +226,7 @@ reload:
 
     while (true)
     {
-        randit();
+        ranopt();
         // debug
         std::cout << "Correct option: " << right << std::endl;
         // debug
@@ -283,5 +258,3 @@ reload:
     return 0;
 }
 #endif
-
-// choise 简化操作，删除静态变量，删除初始化标签。
