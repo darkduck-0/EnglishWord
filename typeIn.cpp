@@ -1,21 +1,32 @@
 #include "typeIn.h"
 
+enum sign
+{
+    UERR,
+    FERR,
+    QUIT,
+    FINI,
+    REBOOT
+};
+
 int saveToNew()
 {
     std::cout << "The file name: ";
     std::string name;
     std::cin >> name;
+    if (name == "/back")
+        return QUIT;
     std::ifstream ifile(name);
     if (ifile.is_open())
     {
         std::cout << "The file: " << name << " exist.\n";
-        return 1;
+        return REBOOT;
     }
     ifile.close();
     std::ofstream file(name, std::ios::binary);
     for (auto &i : wordTable)
         file << i;
-    return 0;
+    return FINI;
 }
 
 int saveToExist()
@@ -23,15 +34,17 @@ int saveToExist()
     std::cout << "The file name: ";
     std::string name;
     std::cin >> name;
+    if (name == "\back")
+        return QUIT;
     std::ofstream file(name, std::ios::app);
     if (!file.is_open())
     {
-        std::cout << "can not open file: " << name << "\n";
-        return 1;
+        std::cout << "can not open file: " << name << std::endl;
+        return REBOOT;
     }
     for (auto &i : wordTable)
         file << i;
-    return 0;
+    return FINI;
 }
 
 int readFromFile()
@@ -41,104 +54,130 @@ int readFromFile()
 
     std::cin >> address;
     if (address == "/back")
-        return 1;
+        return QUIT;
 
     // 添加文件大小限制
     std::ifstream file(address);
     if (!file.is_open())
     {
         std::cout << "can not open file: " << address << std::endl;
-        return 1;
+        return REBOOT;
     }
     std::string eng, chi;
     while (file >> eng >> chi)
     {
         wordTable.emplace_back(eng, chi);
     }
-    return 0;
+    std::cout << address << " readed.\n";
+    return FINI;
 }
 
 int readFromKey()
 {
-    std::cout << "type /end to stop\n";
     std::string eng, chi;
     while (true)
     {
         std::cin >> eng;
-        if (eng == "/end")
+        if (eng == "/back")
             break;
         std::cin >> chi;
         wordTable.emplace_back(eng, chi);
     }
-    return 0;
+    return FINI;
 }
 
-int main()
+int shell()
 {
-    /*
-    uint choose = 0;
-    std::vector<std::string> v(2);
-    std::string chosen = " -> ";
-    std::string nchosen = "    ";
-    while (true)
-    {
-        std::cout << "choose which way to type in:\n";
-        std::cout << "1.screen\n";
-        for (int i = 0; i < v.size(); ++i)
-        {
-            if (i == choose)
-                std::cout << chosen;
-            else
-                std::cout << nchosen;
-            std::cout << v[i];
-        }
-
-    }
-    */
-    int choose;
     std::string cmd;
-loop:
+manu1:
     std::cout << "choose which way to type in:\n";
     std::cout << "1.From file\n";
     std::cout << "2.From keyboard\n";
-    std::cin >> choose;
-    if (choose == 1)
+    std::cin >> cmd;
+    if (cmd == "/back")
     {
-        if (readFromFile() == 1)
-            goto loop;
+        return FINI;
     }
-    else if (choose == 2)
+    else if (cmd == "1")
     {
-        if (readFromKey() == 1)
-            goto loop;
+    rdf:
+        switch (readFromFile())
+        {
+        case QUIT:
+            goto manu1;
+        case REBOOT:
+            goto rdf;
+        case FINI:
+        default:
+            break;
+        }
     }
-    else if (std::cin >> cmd && cmd == "/back")
+    else if (cmd == "2")
     {
-        return 0;
+        switch (readFromKey() == 1)
+        {
+        case FINI:
+        default:
+            break;
+        }
     }
-loop2:
+    else
+    {
+        std::cout << "unknown command: " << cmd << std::endl;
+        goto manu1;
+    }
+
+manu2:
     std::cout << "choose where to save:\n";
     std::cout << "1.new file\n";
     std::cout << "2.old file\n";
 
-    std::cin >> choose;
-    if (choose == 1)
+    std::cin >> cmd;
+    if (cmd == "/back")
     {
-        if (saveToNew() == 1)
-            goto loop2;
+        wordTable.clear();
+        goto manu1;
     }
-    else if (choose == 2)
+    else if (cmd == "1")
     {
-        if (saveToExist() == 1)
-            goto loop2;
+    stn:
+        switch (saveToNew())
+        {
+        case QUIT:
+            goto manu2;
+        case REBOOT:
+            goto stn;
+        case FINI:
+        default:
+            break;
+        }
+    }
+    else if (cmd == "2")
+    {
+    ste:
+        switch (saveToExist())
+        {
+        case QUIT:
+            goto manu2;
+        case REBOOT:
+            goto ste;
+        case FINI:
+        default:
+            break;
+        }
     }
     else
     {
-        std::cin >> cmd;
-        if (cmd == "back")
-            goto loop;
+        std::cout << "unknown command: " << cmd << std::endl;
+        goto manu2;
     }
-    return 0;
+    return FINI;
 }
 
-// 读取int失败后清空缓冲区
+#ifndef nobug
+int main()
+{
+    shell();
+    return 0;
+}
+#endif

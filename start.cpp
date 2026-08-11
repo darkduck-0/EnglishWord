@@ -79,7 +79,7 @@ int init()
         else
             Old.push_back(&i);
     }
-    if (Old.empty())
+    while (Old.size() < setting.cdw)
     {
         Old.push_back(New.back());
         New.pop_back();
@@ -94,18 +94,17 @@ int ranopt()
     static std::vector<std::string *> qus;
     right = rd() % (setting.cdw);
     qus.clear();
-    qus.emplace_back(&Old.front()->chi);
     // bug: 重复的正确选项
     // 暂时不修改，等加入大辞典后，从词典抽词。使用字典检测碰撞。
     // 后续加入形近字选项。
-    for (uint i = 1; i < setting.cdw && i < wordTable.size(); ++i)
+    for (uint i = 0; i < setting.cdw && i < Old.size(); ++i)
     {
-        qus.emplace_back(&(wordTable[i].chi));
+        qus.emplace_back(&(Old[i]->chi));
     }
     std::string *t = qus[right];
     qus[right] = qus[0];
     qus[0] = t;
-    std::cout << Old.front()->eng << std::endl;
+    std::cout << '\t' << Old.front()->eng << std::endl;
     for (int i = 0; i < qus.size(); ++i)
     {
         std::cout << i + 1 << '\t';
@@ -134,9 +133,6 @@ int choise()
     if (Old.front()->deGrade() || errCount >= setting.men)
     {
         std::cout << "wrong!\n";
-        // debug
-        std::cout << *Old.front();
-        // debug
         // pause();
         return UERR;
     }
@@ -164,7 +160,7 @@ int save()
 int collate()
 {
     Old.front()->updateTime();
-    std::pop_heap(Old.begin(), Old.end());
+    std::pop_heap(Old.begin(), Old.end(), compare);
     std::push_heap(Old.begin(), Old.end(), compare);
     uint64_t now = time(0);
     if (now < Old.front()->nextTime)
@@ -187,6 +183,11 @@ int collate()
 void display(const std::string name, std::vector<Word> &v)
 {
     std::cout << '\t' << name << std::endl;
+    if (v.empty())
+    {
+        std::cout << "empty!\n";
+        return;
+    }
     for (auto &i : v)
         std::cout << i;
     std::cout << std::endl;
@@ -194,23 +195,30 @@ void display(const std::string name, std::vector<Word> &v)
 void display(const std::string name, std::vector<Word *> &v)
 {
     std::cout << '\t' << name << std::endl;
+    if (v.empty())
+    {
+        std::cout << "empty!\n";
+        return;
+    }
     for (auto &i : v)
         std::cout << *i;
     std::cout << std::endl;
 }
 // debug
 
-#ifndef nobug
-int main()
+int shell()
 {
 reload:
     switch (load())
     {
     case QUIT:
-        return 0;
+        // clear
+        return FINI;
     case REBOOT:
+        // clear
         goto reload;
     case FINI:
+        // clear
     default:
         break;
     }
@@ -218,6 +226,8 @@ reload:
     switch (init())
     {
     case UERR:
+        // pause
+        // clear
         goto reload;
     case FINI:
     default:
@@ -227,24 +237,19 @@ reload:
     while (true)
     {
         ranopt();
-        // debug
-        std::cout << "Correct option: " << right << std::endl;
-        // debug
         errCount = 0;
     rechoose:
         switch (choise())
         {
         case FINI:
-            // debug
-            std::cout << "level: " << Old.front()->level << std::endl;
-            // debug
-            break;
         case UERR:
-            // debug
+            std::cout << Old.front()->eng << '\t' << Old.front()->chi << std::endl;
             std::cout << "level: " << Old.front()->level << std::endl;
-            // debug
+            std::cin.get();
+            // clear
             break;
         case REBOOT:
+            // clear
             goto rechoose;
         default:
             break;
@@ -255,6 +260,13 @@ reload:
             return 0;
         }
     }
+    return 0;
+}
+
+#ifndef nobug
+int main()
+{
+    shell();
     return 0;
 }
 #endif

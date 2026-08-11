@@ -1,6 +1,7 @@
 #include "word.h"
 #define MAXLEVEL 11
 const static uint64_t levelSwitch[MAXLEVEL] = {
+    0,
     10,
     30,
     60,
@@ -11,7 +12,6 @@ const static uint64_t levelSwitch[MAXLEVEL] = {
     2 * 3600,
     4 * 3600,
     24 * 3600,
-    3 * 24 * 3600,
 };
 
 Word::Word(std::string e, std::string c, uint64_t ct = 0,
