@@ -123,6 +123,16 @@ int choise()
 {
     uint cho;
     std::cin >> cho;
+    if (std::cin.fail())
+    {
+        std::string cmd;
+        std::cin.clear();
+        std::cin >> cmd;
+        if (cmd == "/back")
+        {
+            return QUIT;
+        }
+    }
     if (right == cho)
     {
         std::cout << "corract!\n";
@@ -251,6 +261,9 @@ reload:
         case REBOOT:
             // clear
             goto rechoose;
+        case QUIT:
+            save();
+            return QUIT;
         default:
             break;
         }

@@ -4,6 +4,15 @@
 #include <string>
 #include "word.cpp"
 
+enum sign
+{
+    UERR,
+    FERR,
+    QUIT,
+    FINI,
+    REBOOT
+};
+
 std::vector<Word> wordTable;
 
 int load()

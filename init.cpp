@@ -11,7 +11,16 @@ public:
     config(std::string s) : catalog(s), optionNum(4), maxErrNum(1) {}
 
 private:
-} configs;
+};// configs;
+
+enum sign
+{
+    UERR,
+    FERR,
+    QUIT,
+    FINI,
+    REBOOT
+};
 
 std::string dir;
 
@@ -51,18 +60,18 @@ int creatConfig()
     if (!config.is_open())
     {
         std::cout << "can not creat file: .config\n";
-        return -2;
+        return FERR;
     }
     std::cout << "input catalog's name: ";
     std::string dir;
     std::cin >> dir;
     if (dir == "/back")
-        return 0;
+        return QUIT;
     else
     {
         config << dir;
     }
-    return 0;
+    return FINI;
 }
 
 #ifndef nobug
