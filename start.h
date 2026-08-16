@@ -1,3 +1,5 @@
+#ifndef START
+#define START
 #include <fstream>
 #include <iostream>
 #include <vector>
@@ -5,6 +7,7 @@
 #include <algorithm>
 #include <random>
 #include <ctime>
+#include "sign.h"
 
 class Settings
 {
@@ -20,3 +23,4 @@ int ranopt(std::vector<std::string *> &qus, uint &right);
 int choise(uint real, uint chs, bool init);
 int collate();
 int exit();
+#endif

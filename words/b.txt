@@ -1,35 +1,35 @@
-backload
-badge
-baggage
-bang
-beam
-bearing
-belt-tighening
-benefactor
-bewilder
-Bible
-bibliography
-billboard
-blade
-bleak
-blur
-bold
-bolster
-boon
-booth
-bore
-bourgeois
-brace
-bracket
-breadth
-breeze
-brilliant
-bucket
-bulk
-bulletin
-bureaucrat
-burglar
-burnout
-burst
-buzz
-buzzword
+backload 回程装载（极低频）
+badge 徽章
+baggage 行李
+bang 猛击
+beam 光束/横梁
+bearing 轴承/举止/方位
+belt-tightening 紧缩开支（极低频）
+benefactor 恩人
+bewilder 使迷惑
+Bible 圣经
+bibliography 参考书目（极低频）
+billboard 广告牌
+blade 刀刃/叶片
+bleak 荒凉的/黯淡的
+blur 模糊
+bold 大胆的/粗体的
+bolster 支撑/加强
+boon 恩惠/有益的东西（极低频）
+booth 摊位/小隔间
+bore 使厌烦/钻孔
+bourgeois 资产阶级的（极低频）
+brace 支撑/支架
+bracket 括号/归类
+breadth 宽度/广度
+breeze 微风
+brilliant 辉煌的/杰出的
+bucket 水桶
+bulk 大量/体积
+bulletin 公告
+bureaucrat 官僚（极低频）
+burglar 窃贼
+burnout 精疲力竭/烧毁（极低频）
+burst 爆发/破裂
+buzz 嗡嗡声/兴奋
+buzzword 流行语（极低频）

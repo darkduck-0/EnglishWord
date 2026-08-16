@@ -1,19 +1,4 @@
-#include <fstream>
-#include <iostream>
-#include <vector>
-#include "word.cpp"
-#include <algorithm>
-#include <random>
-#include <ctime>
-
-enum sign
-{
-    UERR,
-    FERR,
-    QUIT,
-    FINI,
-    REBOOT
-};
+#include "start.h"
 
 std::random_device rd;
 std::vector<Word> wordTable;
@@ -22,13 +7,7 @@ std::string fileName;
 uint32_t right;
 uint32_t errCount;
 
-class Settings
-{
-public:
-    uint32_t men;
-    uint32_t cdw;
-
-} setting = {1, 4};
+Settings setting = {1, 4};
 
 auto compare = [](Word *x, Word *y)
 { return *x > *y; };
