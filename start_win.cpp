@@ -19,14 +19,14 @@ std::random_device rd;
 std::vector<Word> wordTable;
 std::vector<Word *> New, Old;
 std::string fileName;
-uint32_t right;
-uint32_t errCount;
+unsigned right;
+unsigned errCount;
 
 class Settings
 {
 public:
-    uint32_t men;
-    uint32_t cdw;
+    unsigned men;
+    unsigned cdw;
 
 } setting = {1, 4};
 
@@ -35,6 +35,8 @@ auto compare = [](Word *x, Word *y)
 
 int load()
 {
+    std::cout << "The file name: ";
+    std::cin >> fileName;
     std::ifstream file(fileName);
     if (fileName == "/back")
         return QUIT;
@@ -44,8 +46,8 @@ int load()
         return REBOOT;
     }
     std::string eng, chi;
-    uint64_t cTime, nTime;
-    uint16_t level;
+    unsigned long long cTime, nTime;
+    unsigned short level;
     while (file >> eng >> chi)
     {
         file.ignore();
@@ -87,39 +89,15 @@ int init()
     return FINI;
 }
 
-int know()
-{
-    std::cout << Old.front()->eng << std::endl;
-    while (true)
-    {
-        std::cout << "1.I know.\n";
-        std::cout << "2.I do not know.\n";
-        std::string cmd;
-        std::cin >> cmd;
-        if (cmd == "1")
-        {
-            return FINI;
-        }
-        else if (cmd == "2")
-        {
-            return UERR;
-        }
-        else if (cmd == "/back")
-        {
-            return QUIT;
-        }
-    }
-}
-
 int ranopt()
 {
     static std::vector<std::string *> qus;
     right = rd() % (setting.cdw);
     qus.clear();
-    // bug: 重复的正确选项
-    // 暂时不修改，等加入大辞典后，从词典抽词。使用字典检测碰撞。
-    // 后续加入形近字选项。
-    for (int i = 0; i < setting.cdw && i < Old.size(); ++i)
+    // bug: ???????????
+    // ?????????????????????????????????????
+    // ?????????��??????
+    for (unsigned i = 0; i < setting.cdw && i < Old.size(); ++i)
     {
         qus.emplace_back(&(Old[i]->chi));
     }
@@ -143,7 +121,7 @@ int samilar()
 
 int choise()
 {
-    uint32_t cho;
+    unsigned cho;
     std::cin >> cho;
     if (std::cin.fail())
     {
@@ -194,7 +172,7 @@ int collate()
     Old.front()->updateTime();
     std::pop_heap(Old.begin(), Old.end(), compare);
     std::push_heap(Old.begin(), Old.end(), compare);
-    uint64_t now = time(0);
+    unsigned long long now = time(0);
     if (now < Old.front()->nextTime)
     {
         if (New.empty())
@@ -292,22 +270,16 @@ reload:
         if (collate() == QUIT)
         {
             save();
-            goto reload;
+            return 0;
         }
     }
-    return FINI;
+    return 0;
 }
 
 #ifndef nobug
-int main(int argc, char *argv[])
+int main()
 {
-    if (argv[1] == nullptr)
-    {
-        std::cout << "example: start fileName\n";
-        return UERR;
-    }
-    fileName = argv[1];
     shell();
-    return FINI;
+    return 0;
 }
 #endif
