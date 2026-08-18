@@ -2,10 +2,10 @@
 #define SIGN
 enum sign
 {
+    FINI = 0,
     UERR,
     FERR,
     QUIT,
-    FINI,
     REBOOT
 };
 #endif

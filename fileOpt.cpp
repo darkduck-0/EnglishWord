@@ -1,25 +1,13 @@
-#include "word.h"
-#include "sign.h"
-#include <string>
-#include <vector>
-#include <iostream>
-#include <fstream>
+#include "fileOpt.h"
+#define NOBUG
 
 using std::cout, std::cin,
     std::string, std::vector,
     std::ifstream, std::ofstream,
     std::endl;
 
-sign loadFile(string fileName, vector<Word> &wordTable)
+int loadFile(ifstream &file, vector<Word> &wordTable)
 {
-    if (fileName == "/back")
-    return QUIT;
-    ifstream file(fileName);
-    if (!file.is_open())
-    {
-        cout << "Can not open file: " << fileName << '\n';
-        return FERR;
-    }
     string eng, chi;
     uint64_t cTime, nTime;
     int16_t level;
@@ -31,27 +19,21 @@ sign loadFile(string fileName, vector<Word> &wordTable)
         file.read(reinterpret_cast<char *>(&nTime), sizeof(nTime));
         wordTable.emplace_back(eng, chi, cTime, level, nTime);
     }
-    return FINI;
+    return wordTable.size();
 }
 
-sign saveFile(string fileName, vector<Word> &wordTable)
+int saveFile(ofstream &file, vector<Word> &wordTable)
 {
-    ofstream file(fileName);
-    if (!file.is_open())
-    {
-        cout << "can not open file: " << fileName << endl;
-        return FERR;
-    }
     for (auto &i : wordTable)
         file << i;
-    return FINI;
+    return wordTable.size();
 }
 
 int importWord(std::istream &source, vector<Word> &wordTable)
 {
     wordTable.clear();
     string eng, chi;
-    while(source >> eng)
+    while (source >> eng)
     {
         if (eng == "/back")
             break;
@@ -61,6 +43,7 @@ int importWord(std::istream &source, vector<Word> &wordTable)
     return wordTable.size();
 }
 
+#ifndef NOBUG
 int main()
 {
     ifstream file("words/a.txt");
@@ -71,5 +54,5 @@ int main()
     cout << importWord(cin, v) << endl;
     for (auto &i : v)
         cout << i << endl;
- 
 }
+#endif

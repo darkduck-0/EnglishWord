@@ -31,7 +31,7 @@ void Word::upGrade()
     updateTime(); // 要不要这一行？
 }
 
-int Word::deGrade()
+bool Word::deGrade()
 {
     --level;
     bool result = level < 0;
@@ -44,6 +44,11 @@ void Word::updateTime()
 {
     currentTime = time(0);
     nextTime = currentTime + levelSwitch[level];
+}
+
+void Word::reviewNow()
+{
+    nextTime = currentTime = time(0);
 }
 
 void Word::write(std::ofstream &os)

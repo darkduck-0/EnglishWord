@@ -1,62 +1,22 @@
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <string>
-#include "word.cpp"
-#include "sign.h"
+#include "fileOpt.h"
 
-using std::cout, std::cin;
+using std::cout, std::cin, std::endl;
+using std::ifstream, std::ofstream;
 using std::string, std::vector;
 
-std::vector<Word> wordTable;
+vector<Word> wordTable;
 string fileName;
 int16_t level;
 
-int load()
-{
-    std::ifstream file(fileName);
-    if (!file.is_open())
-    {
-        std::cout << "can not open file: " << fileName << " .\n";
-        return FERR;
-    }
-    std::string eng, chi;
-    uint64_t cTime, nTime;
-    int16_t tlevel;
-    while (file >> eng >> chi)
-    {
-        file.ignore();
-        file.read(reinterpret_cast<char *>(&cTime), sizeof(cTime));
-        file.read(reinterpret_cast<char *>(&tlevel), sizeof(tlevel));
-        file.read(reinterpret_cast<char *>(&nTime), sizeof(nTime));
-        file.ignore();
-        wordTable.emplace_back(eng, chi, cTime, level, nTime);
-    }
-    return FINI;
-}
-
-int save()
-{
-    std::ofstream file(fileName);
-    if (!file.is_open())
-    {
-        std::cout << "can not open file: " << fileName << std::endl;
-        return FERR;
-    }
-    for (auto &i : wordTable)
-    {
-        file << i;
-    }
-    return FINI;
-}
-
 int main(int argc, char *argv[])
 {
+    /*
     if (argc < 3)
     {
         cout << "usage: file level\n";
         return UERR;
     }
+
     fileName = argv[1];
     level = std::stoi((string)(argv[2]));
     if (level < 0 || level > 12)
@@ -64,12 +24,34 @@ int main(int argc, char *argv[])
         cout << "invalid level.\n";
         return UERR;
     }
-    int sign;
-    if ((sign = load()) != FINI)
-        return sign;
-    for (auto i : wordTable)
-        cout << i;
-    if ((sign = save()) != FINI)
-        return sign;
+    */
+    cin >> fileName >> level;
+    ifstream inFile(fileName);
+    if (!inFile.is_open())
+    {
+        cout << "can not open file: " << fileName << endl;
+        return FERR;
+    }
+    cout << "read " << loadFile(inFile, wordTable) << " words.\n";
+
+    for (auto &i : wordTable)
+    {
+        i.level = level;
+        i.reviewNow();
+    }
+    inFile.close();
+
+    string tempFile = fileName + ".tmp";
+    ofstream outFile(tempFile);
+    if (!outFile.is_open())
+    {
+        cout << "can not creat file: " << tempFile << endl;
+        return FERR;
+    }
+    cout << "write " << saveFile(outFile, wordTable) << " words.\n";
+
+    remove(fileName.c_str());
+    rename(tempFile.c_str(), fileName.c_str());
+
     return FINI;
 }
