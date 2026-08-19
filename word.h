@@ -1,5 +1,5 @@
-#ifndef word
-#define word
+#ifndef WORD
+#define WORD
 
 #include <string>
 #include <iostream>

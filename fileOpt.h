@@ -7,11 +7,10 @@
 #include <iostream>
 #include <fstream>
 
+// the functions are not check whether the file is valid.
+// return the number of processed words.
 int loadFile(std::ifstream &, std::vector<Word> &);
-// check valid, quit,
 int saveFile(std::ofstream &, std::vector<Word> &);
-// check writable
 int importWord(std::istream &, std::vector<Word> &);
-// no check
 
 #endif

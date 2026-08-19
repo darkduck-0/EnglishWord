@@ -10,7 +10,6 @@ int16_t level;
 
 int main(int argc, char *argv[])
 {
-    /*
     if (argc < 3)
     {
         cout << "usage: file level\n";
@@ -24,8 +23,6 @@ int main(int argc, char *argv[])
         cout << "invalid level.\n";
         return UERR;
     }
-    */
-    cin >> fileName >> level;
     ifstream inFile(fileName);
     if (!inFile.is_open())
     {

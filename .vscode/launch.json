@@ -1,11 +1,11 @@
 {
     "configurations": [
         {
-            "name": "C/C++: g++ build and debug active file",
+            "name": "set dbg",
             "type": "cppdbg",
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
-            "args": [],
+            "args": ["words/a_cp", "4"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -23,7 +23,33 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: g++ build active file",
+            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "typeIn dbg",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": ["-ad", "words/a.txt", "words/a_new"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
             "miDebuggerPath": "/usr/bin/gdb"
         }
     ],
