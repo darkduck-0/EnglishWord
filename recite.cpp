@@ -5,6 +5,8 @@
 #include <thread>
 #include <chrono>
 
+#define MAXWORD 1024
+
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
 using std::string, std::vector;
@@ -43,7 +45,7 @@ int main(int argc, char *argv[])
         return UERR;
     while (true)
     {
-        cout << "\033[2J\033[H";
+        cout << "\033[2J\033[H\033[3J";
         ranOpt();
         errCount = 0;
         switch (know())
@@ -51,10 +53,10 @@ int main(int argc, char *argv[])
         case UERR:
             Old.front()->deGrade();
         wrong:
-            cout << "\033[2J\033[H";
+            cout << "\033[2J\033[H\033[3J";
             cout << Old.front()->eng << ": " << Old.front()->chi << endl;
             cout << "level: " << Old.front()->level << endl;
-            cout << "\033[30mI know.\033[0m";
+            cout << "\nI know.";
             getchar();
             getchar();
             goto wordDone;
@@ -65,7 +67,7 @@ int main(int argc, char *argv[])
             break;
         }
     rechoose:
-        cout << "\033[2J\033[H";
+        cout << "\033[2J\033[H\033[3J";
         opt();
         switch (judge())
         {
@@ -166,10 +168,10 @@ void opt()
 
 sign init()
 {
-    cout << "\033[?251";
-    words.reserve(1024);
-    Old.reserve(512);
-    New.reserve(512);
+    cout << "\033[?25l";
+    words.reserve(MAXWORD);
+    Old.reserve(MAXWORD);
+    New.reserve(MAXWORD);
     qus.resize(qusNum);
     if (words.empty())
     {
@@ -219,6 +221,7 @@ sign know()
 
 sign save()
 {
+    cout << "\033[?25h";
     string tempFile = fileName + ".tmp";
     ofstream file(tempFile);
     if (!file.is_open())

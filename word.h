@@ -19,6 +19,7 @@ public:
     void initTime();
     void updateTime();
     void reviewNow();
+    void reset();
     void upGrade();
     bool deGrade();
     void write(std::ofstream &);

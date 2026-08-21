@@ -24,6 +24,12 @@ void Word::initTime()
     nextTime = currentTime;
 }
 
+void Word::reset()
+{
+    currentTime = nextTime = 0;
+    level = 0;
+}
+
 void Word::upGrade()
 {
     ++level;
