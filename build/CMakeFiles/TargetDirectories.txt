@@ -1,2 +1,0 @@
-/home/jsong/EnglishWord/build/CMakeFiles/edit_cache.dir
-/home/jsong/EnglishWord/build/CMakeFiles/rebuild_cache.dir

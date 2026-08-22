@@ -1,35 +1,11 @@
-#include "word.h"
-#include <algorithm>
-#include "fileOpt.h"
-#include <random>
-#include <thread>
-#include <chrono>
-
-#define MAXWORD 1024
+#include "recite.h"
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
 using std::string, std::vector;
 
-sign know();
-sign init();
-auto compare = [](Word *x, Word *y)
-{ return *x > *y; };
-vector<Word> words;
-vector<Word *> New, Old;
-std::random_device rd;
-sign ranOpt();
-sign judge();
-sign collate();
-uint32_t qusNum = 4;
-uint32_t ritChs;
-uint32_t errCount;
 uint32_t errMax = 0;
-string fileName;
-vector<string *> qus;
-void opt();
-
-sign save();
+uint32_t qusNum = 4;
 
 int main(int argc, char *argv[])
 {
@@ -93,12 +69,22 @@ quit:
 
 sign ranOpt()
 {
-    qus.clear();
     ritChs = rd() % qusNum;
-    for (int i = 0; i < qusNum; ++i)
+    static int index = 0;
+    if (1 + index + qusNum >= words.size())
     {
-        qus[i] = &(Old[i]->chi);
+        index = 0;
+        std::shuffle(chis.begin(), chis.end(), gen);
     }
+
+    qus[0] = &(Old.front()->chi);
+    for (int i = 1; i < qusNum; ++index)
+    {
+        if (&(Old.front()->chi) == chis[index])
+           continue;
+        qus[i++] = chis[index];
+    }
+
     string *t = qus[ritChs];
     qus[ritChs] = qus[0];
     qus[0] = t;
@@ -172,6 +158,7 @@ sign init()
     words.reserve(MAXWORD);
     Old.reserve(MAXWORD);
     New.reserve(MAXWORD);
+    chis.reserve(MAXWORD);
     qus.resize(qusNum);
     if (words.empty())
     {
@@ -185,6 +172,7 @@ sign init()
     }
     for (auto &i : words)
     {
+        chis.push_back(&(i.chi));
         if (i.currentTime)
             Old.push_back(&i);
         else

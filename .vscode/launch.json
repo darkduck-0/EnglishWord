@@ -4,8 +4,34 @@
             "name": "set dbg",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
             "args": ["-r", "words/a_cp"],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
+            "name": "dbg with word and fileOpt",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -30,7 +56,7 @@
             "name": "typeIn dbg",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
             "args": ["-ad", "words/a.txt", "words/a_new"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
@@ -56,7 +82,7 @@
             "name": "recite dbg",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
             "args": ["words/a_cp"], 
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
