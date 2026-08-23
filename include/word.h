@@ -5,13 +5,14 @@
 #include <iostream>
 #include <fstream>
 #include <ctime>
+#include <iomanip>
 
 class Word
 {
 public:
     std::string eng;
     std::string chi;
-    uint64_t currentTime;
+    uint64_t lastTime;
     int16_t level;
     uint64_t nextTime;
 
@@ -23,7 +24,6 @@ public:
     void upGrade();
     bool deGrade();
     void write(std::ofstream &);
-    void read(std::ifstream &);
     bool operator<(const Word &other) const;
     bool operator>(const Word &other) const;
 

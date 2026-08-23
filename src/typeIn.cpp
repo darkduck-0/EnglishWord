@@ -1,5 +1,6 @@
 #include "sign.h"
 #include "fileOpt.h"
+#include <unistd.h>
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
@@ -7,49 +8,45 @@ using std::string, std::vector;
 
 int main(int argc, char *argv[])
 {
-    if (argc < 3 || argc > 4)
-    {
-        cout << "usage: typeIn -a/s/d [source] destination\n";
-        return UERR;
-    }
-
     bool append = false;
-    bool screen = false;
+    bool screen = true;
     bool detail = false;
-    string cmd = argv[1];
-    for (auto c : cmd)
+
+    int opt;
+    string fileName;
+    while ((opt = getopt(argc, argv, "af:d")) != -1)
     {
-        switch (c)
+        switch (opt)
         {
-        case '-':
-        default:
-            break;
         case 'a':
             append = true;
             break;
-        case 's':
-            screen = true;
+        case 'f':
+            fileName = optarg;
+            screen = false;
             break;
         case 'd':
             detail = true;
+            break;
+        case '?':
+        cout << "usage: typeIn -a/f/d [source] destination\n";
+        return UERR;
+        default:
             break;
         }
     }
 
     vector<Word> words;
-    string outFileName;
     if (screen)
     {
         importWord(cin, words);
-        outFileName = argv[2];
     }
     else
     {
-        outFileName = argv[3];
-        ifstream inFile(argv[2]);
+        ifstream inFile(fileName);
         if (!inFile.is_open())
         {
-            cout << "can not open file: " << argv[2] << ".\n";
+            cout << "can not open file: " << fileName << ".\n";
             return FERR;
         }
         importWord(inFile, words);
@@ -63,18 +60,12 @@ int main(int argc, char *argv[])
     }
 
     ofstream outFile;
-    if (append)
-    {
-        outFile.open(outFileName, std::ios::app);
-    }
-    else
-    {
-        outFile.open(outFileName);
-    }
+    fileName = argv[optind];
+    outFile.open(fileName, append ? std::ios::app : std::ios::out);
 
     if (!outFile.is_open())
     {
-        cout << "can not open file: " << outFileName << ".\n";
+        cout << "can not open file: " << fileName << ".\n";
         return FERR;
     }
     saveFile(outFile, words);

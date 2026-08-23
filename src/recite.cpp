@@ -69,6 +69,8 @@ int main(int argc, char *argv[])
             break;
     }
 quit:
+    std::tm * tm = std::localtime((time_t*)&(Old.front()->nextTime));
+    cout << "next time: " << std::put_time(tm, "%Y-%M-%d %H:%M:%S") << endl;
     return save();
 }
 
@@ -184,7 +186,7 @@ sign init()
     for (auto &i : words)
     {
         chis.push_back(&(i.chi));
-        if (i.currentTime)
+        if (i.lastTime)
             Old.push_back(&i);
         else
             New.push_back(&i);
