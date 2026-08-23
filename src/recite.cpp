@@ -9,6 +9,11 @@ uint32_t qusNum = 4;
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        cout << "usage: recite file\n";
+        return UERR;
+    }
     fileName = argv[1];
     ifstream inFile(fileName);
     if (!inFile.is_open())
@@ -17,6 +22,7 @@ int main(int argc, char *argv[])
         return FERR;
     }
     loadFile(inFile, words);
+    inFile.close();
     if (init() != FINI)
         return UERR;
     while (true)
@@ -64,7 +70,6 @@ int main(int argc, char *argv[])
     }
 quit:
     return save();
-    // recite wordfile [mod]
 }
 
 sign ranOpt()
@@ -81,7 +86,7 @@ sign ranOpt()
     for (int i = 1; i < qusNum; ++index)
     {
         if (&(Old.front()->chi) == chis[index])
-           continue;
+            continue;
         qus[i++] = chis[index];
     }
 
@@ -155,10 +160,16 @@ void opt()
 sign init()
 {
     cout << "\033[?25l";
-    words.reserve(MAXWORD);
-    Old.reserve(MAXWORD);
-    New.reserve(MAXWORD);
-    chis.reserve(MAXWORD);
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8); 
+    SetConsoleCP(CP_UTF8);
+#endif
+
+    words.reserve(1024);
+    Old.reserve(1024);
+    New.reserve(1024);
+    chis.reserve(1024);
     qus.resize(qusNum);
     if (words.empty())
     {
@@ -218,6 +229,7 @@ sign save()
         return FERR;
     }
     saveFile(file, words);
+    file.close();
     remove(fileName.c_str());
     rename(tempFile.c_str(), fileName.c_str());
 

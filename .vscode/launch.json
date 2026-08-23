@@ -1,33 +1,7 @@
 {
     "configurations": [
         {
-            "name": "set dbg",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
-            "args": ["-r", "words/a_cp"],
-            "stopAtEntry": false,
-            "cwd": "${fileDirname}",
-            "environment": [],
-            "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                },
-                {
-                    "description": "Set Disassembly Flavor to Intel",
-                    "text": "-gdb-set disassembly-flavor intel",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
-            "miDebuggerPath": "/usr/bin/gdb"
-        },
-        {
-            "name": "dbg with word and fileOpt",
+            "name": "launch on Linux",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
@@ -49,15 +23,15 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
+            "preLaunchTask": "build on Linux",
             "miDebuggerPath": "/usr/bin/gdb"
         },
         {
-            "name": "typeIn dbg",
+            "name": "launch on Windows",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
-            "args": ["-ad", "words/a.txt", "words/a_new"],
+            "program": "${workspaceFolder}/build/Windows/${fileBasenameNoExtension}",
+            "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -75,15 +49,15 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
+            "preLaunchTask": "build on Windows",
             "miDebuggerPath": "/usr/bin/gdb"
         },
         {
-            "name": "recite dbg",
+            "name": "dbg recite on Linux",
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
-            "args": ["words/a_cp"], 
+            "args": ["${workspaceFolder}/words/a_cp"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],
@@ -101,9 +75,10 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "compile with word.cpp and fileOpe.cpp",
+            "preLaunchTask": "build on Linux",
             "miDebuggerPath": "/usr/bin/gdb"
         },
+
     ],
     "version": "2.0.0"
 }

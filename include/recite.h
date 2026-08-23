@@ -1,13 +1,16 @@
 #ifndef RECITE
 #define RECITE
 
+#ifdef _WIN32
+#include <windows.h>
+#endif
+
 #include "word.h"
 #include <algorithm>
 #include "fileOpt.h"
 #include <random>
 #include <thread>
 #include <chrono>
-#define MAXWORD 1024
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
