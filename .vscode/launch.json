@@ -83,7 +83,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
-            "args": ["-f", "${workspaceFolder}/words/b.txt", "-d", "${workspaceFolder}/words/b"],
+            "args": ["-f", "${workspaceFolder}/words/b.txt", "${workspaceFolder}/words/b", "-d"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

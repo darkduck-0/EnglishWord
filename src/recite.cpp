@@ -1,3 +1,4 @@
+#include "winbuild.h"
 #include "recite.h"
 
 using std::cout, std::cin, std::endl;

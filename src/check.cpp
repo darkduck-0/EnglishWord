@@ -1,3 +1,4 @@
+#include "winbuild.h"
 #include "word.h"
 #include "fileOpt.h"
 #include "sign.h"
@@ -11,6 +12,11 @@ int main(int argc, char *argv[])
         cout << "usage: check file\n";
         return UERR;
     }
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
 
     std::vector<Word> words;
     words.reserve(1024);

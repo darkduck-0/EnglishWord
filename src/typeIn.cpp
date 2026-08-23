@@ -1,3 +1,4 @@
+#include "winbuild.h"
 #include "sign.h"
 #include "fileOpt.h"
 #include <unistd.h>
@@ -51,6 +52,12 @@ int main(int argc, char *argv[])
         }
         importWord(inFile, words);
     }
+
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8); 
+    SetConsoleCP(CP_UTF8);
+    cout << "utf-8 enable\n";
+#endif
 
     if (detail)
     {

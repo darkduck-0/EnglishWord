@@ -1,5 +1,6 @@
 #ifndef FILEOPT
 #define FILEOPT
+
 #include "word.h"
 #include "sign.h"
 #include <string>

@@ -1,10 +1,6 @@
 #ifndef RECITE
 #define RECITE
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include "word.h"
 #include <algorithm>
 #include "fileOpt.h"
