@@ -34,15 +34,15 @@ void Word::reset()
     level = 0;
 }
 
-void Word::upGrade()
+void Word::upGrade(int16_t delta = 1)
 {
-    ++level;
+    level += delta;
     level = level > MAXLEVEL ? MAXLEVEL : level;
 }
 
-bool Word::deGrade()
+bool Word::deGrade(int16_t delta = 1)
 {
-    --level;
+    level -= delta;
     bool result = level < 0;
     level = result ? 0 : level;
     return result;

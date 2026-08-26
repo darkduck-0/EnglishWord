@@ -71,7 +71,7 @@ int main(int argc, char *argv[])
     }
 quit:
     std::tm * tm = std::localtime((time_t*)&(Old.front()->nextTime));
-    cout << "next time: " << std::put_time(tm, "%Y-%M-%d %H:%M:%S") << endl;
+    cout << "next time: " << std::put_time(tm, "%Y-%m-%d %H:%M:%S") << endl;
     return save();
 }
 

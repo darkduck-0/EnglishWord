@@ -46,6 +46,7 @@ sign option(void(f)())
     }
     cout << "write " << saveFile(outFile, wordTable) << " words in file: " << fileName << ".\n";
 
+    outFile.close();
     remove(fileName.c_str());
     rename(tempFile.c_str(), fileName.c_str());
     return FINI;

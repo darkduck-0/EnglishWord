@@ -30,7 +30,7 @@
             "name": "launch on Windows",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/Windows/${fileBasenameNoExtension}",
+            "program": "${workspaceFolder}/build/Windows/${fileBasenameNoExtension}.exe",
             "args": [],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",

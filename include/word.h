@@ -21,8 +21,8 @@ public:
     void updateTime();
     void reviewNow();
     void reset();
-    void upGrade();
-    bool deGrade();
+    void upGrade(int16_t d = 1);
+    bool deGrade(int16_t d = 1);
     void write(std::ofstream &);
     bool operator<(const Word &other) const;
     bool operator>(const Word &other) const;
