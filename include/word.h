@@ -6,31 +6,34 @@
 #include <fstream>
 #include <ctime>
 #include <iomanip>
+#include <chrono>
 
 class Word
 {
-public:
-    std::string eng;
-    std::string chi;
-    uint64_t lastTime;
-    int16_t level;
-    uint64_t nextTime;
+    friend std::ostream &operator<<(std::ostream &os, const Word &p);
+    friend std::ofstream &operator<<(std::ofstream &os, const Word &p);
 
-    Word(std::string, std::string, uint64_t, int16_t, uint64_t);
-    void initTime();
+public:
+    const std::string eng;
+    const std::string chi;
+
+    Word(std::string, std::string, time_t, int16_t, time_t);
     void updateTime();
-    void reviewNow();
+    void updateTime(size_t level);
     void reset();
-    void upGrade(int16_t d = 1);
+    std::ostream &coutLastTime() const;
+    std::ostream &coutNextTime() const;
+    std::ostream &coutLevel() const;
+    bool timeUp() const;
+    bool upGrade(int16_t d = 1);
     bool deGrade(int16_t d = 1);
-    void write(std::ofstream &);
     bool operator<(const Word &other) const;
     bool operator>(const Word &other) const;
 
 private:
-    friend std::ostream &operator<<(std::ostream &os, const Word &p);
-    friend std::ofstream &operator<<(std::ofstream &os, const Word &p);
-    friend std::ifstream &operator>>(std::ifstream &is, Word &p);
+    time_t lastTime;
+    int16_t level;
+    time_t nextTime;
 };
 
 #endif

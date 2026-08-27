@@ -18,15 +18,9 @@ const static uint64_t levelSwitch[MAXLEVEL] = {
     60 * DAY,
 };
 
-Word::Word(std::string e, std::string c, uint64_t ct = 0,
-           int16_t l = 0, uint64_t nt = 0)
+Word::Word(std::string e, std::string c, time_t ct = 0,
+           int16_t l = 0, time_t nt = 0)
     : eng(e), chi(c), lastTime(ct), level(l), nextTime(nt) {}
-
-void Word::initTime()
-{
-    lastTime = time(0);
-    nextTime = lastTime;
-}
 
 void Word::reset()
 {
@@ -34,13 +28,15 @@ void Word::reset()
     level = 0;
 }
 
-void Word::upGrade(int16_t delta = 1)
+bool Word::upGrade(int16_t delta)
 {
     level += delta;
-    level = level > MAXLEVEL ? MAXLEVEL : level;
+    bool result = level > MAXLEVEL;
+    level = result ? MAXLEVEL : level;
+    return result;
 }
 
-bool Word::deGrade(int16_t delta = 1)
+bool Word::deGrade(int16_t delta)
 {
     level -= delta;
     bool result = level < 0;
@@ -54,21 +50,10 @@ void Word::updateTime()
     nextTime = lastTime + levelSwitch[level];
 }
 
-void Word::reviewNow()
+void Word::updateTime(size_t l)
 {
-    nextTime = lastTime = time(0);
-}
-
-void Word::write(std::ofstream &os)
-{
-    os.write(eng.data(), eng.size());
-    os.write("\t", 1);
-    os.write(chi.data(), chi.size());
-    os.write("\t", 1);
-    os.write(reinterpret_cast<const char *>(&lastTime), sizeof(lastTime));
-    os.write(reinterpret_cast<const char *>(&level), sizeof(level));
-    os.write(reinterpret_cast<const char *>(&nextTime), sizeof(nextTime));
-    os.write("\n", 1);
+    lastTime = time(0);
+    nextTime = lastTime + levelSwitch[l];
 }
 
 bool Word::operator<(const Word &other) const
@@ -83,11 +68,9 @@ bool Word::operator>(const Word &other) const
 
 std::ostream &operator<<(std::ostream &os, const Word &p)
 {
-    os << p.eng << '\t';
-    os << p.chi << '\t';
-    os << p.lastTime << '\t';
-    os << p.level << '\t';
-    os << p.nextTime << '\n';
+    os << p.eng << '\t' << p.chi << '\t';
+    p.coutLastTime() << '\t' << p.level << '\t';
+    p.coutNextTime() << '\n';
     return os;
 }
 
@@ -101,12 +84,27 @@ std::ofstream &operator<<(std::ofstream &os, const Word &p)
     return os;
 }
 
-std::ifstream &operator>>(std::ifstream &is, Word &p)
+std::ostream &Word::coutLastTime() const
 {
-    is >> p.eng >> p.chi;
-    is.ignore();
-    is.read(reinterpret_cast<char *>(&p.lastTime), sizeof(p.lastTime));
-    is.read(reinterpret_cast<char *>(&p.level), sizeof(p.level));
-    is.read(reinterpret_cast<char *>(&p.nextTime), sizeof(p.nextTime));
-    return is;
+    std::tm *tm = std::localtime(&lastTime);
+    std::cout << std::put_time(tm, "%Y-%m-%d %H:%M:%S");
+    return std::cout;
+}
+
+std::ostream &Word::coutNextTime() const
+{
+    std::tm *tm = std::localtime(&nextTime);
+    std::cout << std::put_time(tm, "%Y-%m-%d %H:%M:%S");
+    return std::cout;
+}
+
+std::ostream &Word::coutLevel() const
+{
+    std::cout << "level: " << level;
+    return std::cout;
+}
+
+bool Word::timeUp() const
+{
+    return time(0) > nextTime;
 }

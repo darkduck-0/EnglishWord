@@ -2,16 +2,21 @@
 #define WORDSORG
 
 
+#include <vector>
+#include <string>
+#include "word.h"
+#include <algorithm>
+#include "sign.h"
+#include <chrono>
+
+
 static auto compare = [](Word *x, Word *y)
 { return *x > *y; };
 
 
-void initWords();
+void initOrg();
 void readyMove();
 void waitingMove();
-
-
-extern vector<Word *> waiting, ready;
 
 
 #endif

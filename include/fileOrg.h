@@ -5,13 +5,12 @@
 #include "sign.h"
 #include <string>
 #include <vector>
-#include <iostream>
 #include <fstream>
 
 // the functions are not check whether the file is valid.
 // return the number of processed words.
-int loadFile(std::ifstream &, std::vector<Word> &);
-int saveFile(std::ofstream &, std::vector<Word> &);
+int loadFile(std::string &fileName, std::vector<Word> &words);
+int saveFile(std::string &fileName, std::vector<Word> &words);
 int importWord(std::istream &, std::vector<Word> &);
 
 #endif

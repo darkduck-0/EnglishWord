@@ -27,6 +27,32 @@
             "miDebuggerPath": "/usr/bin/gdb"
         },
         {
+            "name": "single launch on Linux",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/Linux/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Set Disassembly Flavor to Intel",
+                    "text": "-gdb-set disassembly-flavor intel",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "single build on Linux",
+            "miDebuggerPath": "/usr/bin/gdb"
+        },
+        {
             "name": "launch on Windows",
             "type": "cppdbg",
             "request": "launch",

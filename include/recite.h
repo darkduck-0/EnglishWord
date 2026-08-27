@@ -3,7 +3,7 @@
 
 #include "word.h"
 #include <algorithm>
-#include "fileOpt.h"
+#include "fileOrg.h"
 #include <random>
 #include <thread>
 #include <chrono>

@@ -1,19 +1,4 @@
 #include "wordsOpt.h"
-#include <string>
-#include <vector>
-#include "word.h"
-#include <random>
-#include <thread>
-#include "sign.h"
-#include <algorithm>
-
-#define RedOpen "\033[31m"
-#define GreenOpen "\033[32m"
-#define Reset "\033[0m"
-#define HideCursor "\033[?25l"
-#define ShowCursor "\033[?25h"
-#define Clear "\033[H\033[J"
-
 
 std::mt19937 gen(std::random_device{}());
 std::random_device rd;
@@ -21,15 +6,13 @@ std::random_device rd;
 using std::cout, std::cin, std::endl;
 using std::string, std::vector;
 
-
-static vector<string *> opts, errWordTemp, errWordTotal, chis;
+static vector<const string *> opts, errWordTemp, errWordTotal, chis;
 static string noRightOpt = GreenOpen "No correct option.\n" Reset;
 static string misMemOpt = RedOpen "Honestly, I misremembered.\n" Reset;
-static size_t rightOpt;
+static int rightOpt;
 static uint32_t errWordCount;
 
-extern size_t optSize;
-
+extern size_t optSize; // from start
 
 void initOpt()
 {
@@ -72,12 +55,11 @@ void randomOpt(string *rightChi)
         opts[i++] = chis[index];
     }
 
-    string *t = opts[rightOpt];
+    const string *t = opts[rightOpt];
     opts[rightOpt] = opts[0];
     opts[0] = t;
     ++rightOpt;
 }
-
 
 void showOpt(string *eng)
 {
@@ -86,10 +68,9 @@ void showOpt(string *eng)
         cout << i + 1 << ". " << *opts[i] << endl;
 }
 
-
 sign judge(Word *targetWord)
 {
-    size_t userOpt;
+    int userOpt;
     if (scanf("%d", &userOpt) != 1)
     {
         string cmd;
@@ -101,12 +82,12 @@ sign judge(Word *targetWord)
 
     if (userOpt < 1 || userOpt > optSize + 1)
         return REBOOT;
-    
+
     if (userOpt == rightOpt)
     {
         targetWord->upGrade();
         cout << GreenOpen "corract." Reset;
-        cout << " level: " << targetWord->level << endl;
+        targetWord->coutLevel() << endl;
         std::this_thread::sleep_for(std::chrono::milliseconds(750));
         return FINI;
     }
@@ -115,21 +96,20 @@ sign judge(Word *targetWord)
 
     cout << Clear;
     cout << RedOpen "wrong." Reset;
-    cout << " level: " << targetWord->level << endl;
+    targetWord->coutLevel() << '\n';
 
-    cout << targetWord->eng << ": " << targetWord->chi << endl;
-    cout << "I know.\n";
+    cout << targetWord->eng << ": " << targetWord->chi << '\n';
+    cout << "I know." << endl;
 
     return UERR;
 }
-
 
 sign know(Word *targetWord)
 {
     cout << targetWord->eng << endl;
     cout << "1. " GreenOpen "I know." Reset << endl;
     cout << "2. " RedOpen "I do not konw." Reset << endl;
-    
+
     while (true)
     {
         string cmd;

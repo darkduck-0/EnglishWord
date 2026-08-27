@@ -1,17 +1,14 @@
 #include "wordsOrg.h"
-#include <vector>
-#include <string>
-#include "word.h"
-#include <algorithm>
-#include "sign.h"
-#include <chrono>
 
 using std::cout, std::cin, std::endl;
 using std::vector, std::string;
 using std::make_heap, std::pop_heap, std::push_heap;
 
 
-void initWords()
+extern vector<Word *> waiting, ready, newWords;  // From start
+
+
+void initOrg()
 {
     waiting.reserve(1024);
     ready.reserve(1024);
@@ -32,8 +29,7 @@ static void moveWord(vector<Word *> &a, vector<Word *> &b)
 
 void readyMove()
 {
-    uint64_t now = time(0);
-    if (ready.front()->nextTime > now)
+    if (ready.front()->timeUp())
         moveWord(ready, waiting);
     else
     {
@@ -45,7 +41,6 @@ void readyMove()
 
 void waitingMove()
 {
-    uint64_t now = time(0);
-    while (waiting.front()->nextTime > now)
+    while (waiting.front()->timeUp())
         moveWord(waiting, ready);
 }
