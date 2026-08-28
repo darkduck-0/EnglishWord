@@ -1,4 +1,8 @@
 #include "word.h"
+#include <ctime>
+#include <iomanip>
+#include <chrono>
+
 #define MAXLEVEL 11
 #define MINUTE 60
 #define HOUR 60 * MINUTE
@@ -21,12 +25,6 @@ const static uint64_t levelSwitch[MAXLEVEL] = {
 Word::Word(std::string e, std::string c, time_t ct = 0,
            int16_t l = 0, time_t nt = 0)
     : eng(e), chi(c), lastTime(ct), level(l), nextTime(nt) {}
-
-void Word::reset()
-{
-    lastTime = nextTime = 0;
-    level = 0;
-}
 
 bool Word::upGrade(int16_t delta)
 {
@@ -68,8 +66,8 @@ bool Word::operator>(const Word &other) const
 
 std::ostream &operator<<(std::ostream &os, const Word &p)
 {
-    os << p.eng << '\t' << p.chi << '\t';
-    p.coutLastTime() << '\t' << p.level << '\t';
+    os << p.eng << '\t' << p.chi << '\t' << p.level << '\t';
+    p.coutLastTime() << '\t';
     p.coutNextTime() << '\n';
     return os;
 }
@@ -77,8 +75,8 @@ std::ostream &operator<<(std::ostream &os, const Word &p)
 std::ofstream &operator<<(std::ofstream &os, const Word &p)
 {
     os << p.eng << '\t' << p.chi << '\t';
-    os.write(reinterpret_cast<const char *>(&p.lastTime), sizeof(p.lastTime));
     os.write(reinterpret_cast<const char *>(&p.level), sizeof(p.level));
+    os.write(reinterpret_cast<const char *>(&p.lastTime), sizeof(p.lastTime));
     os.write(reinterpret_cast<const char *>(&p.nextTime), sizeof(p.nextTime));
     os << '\n';
     return os;

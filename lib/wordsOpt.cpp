@@ -1,4 +1,9 @@
 #include "wordsOpt.h"
+#include <vector>
+#include <random>
+#include <thread>
+#include <algorithm>
+#include "easyConsole.h"
 
 std::mt19937 gen(std::random_device{}());
 std::random_device rd;

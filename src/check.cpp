@@ -1,15 +1,16 @@
 #include "winbuild.h"
 #include "word.h"
-#include "fileOpt.h"
+#include "fileOrg.h"
 #include "sign.h"
+#include "easyConsole.h"
 
 using std::cout, std::endl;
 
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
     if (argc < 2)
     {
-        cout << "usage: check file\n";
+        cout << RedOpen "usage: check file" Reset << endl;
         return UERR;
     }
 
@@ -20,24 +21,17 @@ int main(int argc, char *argv[])
 
     std::vector<Word> words;
     words.reserve(1024);
-    std::ifstream file;
     for (int i = 1; i < argc; ++i)
     {
-        file.open(argv[i]);
-        if (!file.is_open())
+        if (loadFile(argv[i], words) == -1)
         {
-            cout << "can not open file: " << argv[i] << ".\n";
-            file.close();
+            cout << RedOpen "Can not open file: " << argv[i] << endl;
             continue;
         }
-
         cout << argv[i] << ":\n";
-        words.clear();
-        loadFile(file, words);
         for (auto &k : words)
             cout << k;
-        cout << words.size() << " words.\n";
-        file.close();
+        cout << GreenOpen "Read " << words.size() << " words." << endl;
     }
 
     return FINI;

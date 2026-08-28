@@ -1,52 +1,49 @@
-#include "fileOpt.h"
+#include "fileOrg.h"
 #include <unistd.h>
+#include "sign.h"
+#include "easyConsole.h"
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
 using std::string, std::vector;
 
-vector<Word> wordTable;
+vector<Word> words;
 string fileName;
 int16_t level;
 
-void reset()
+void reset(Word &w)
 {
-    for (auto &i : wordTable)
-        i.reset();
+    w.lastTime = w.nextTime = 0;
+    w.level = 0;
 }
 
-void set()
+void set(Word &w)
 {
-    for (auto &i : wordTable)
-    {
-        i.level = level;
-        i.reviewNow();
-    }
+    w.level = level;
+    w.lastTime = w.nextTime = time(0);
 }
 
-sign option(void(f)())
+sign option(void(f)(Word &))
 {
-    ifstream inFile(fileName);
-    if (!inFile.is_open())
+    int wordNum;
+    if ((wordNum = loadFile(fileName, words)) == -1)
     {
-        cout << "can not open file: " << fileName << endl;
+        cout << RedOpen "Can not open file: " << fileName << Reset << endl;
         return FERR;
     }
-    cout << "read " << loadFile(inFile, wordTable) << " words in file: " << fileName << ".\n";
-    inFile.close();
+    cout << GreenOpen "Read " << wordNum << "words." << endl;
 
-    f();
+    for (auto &i : words)
+        f(i);
 
     string tempFile = fileName + ".tmp";
-    ofstream outFile(tempFile);
-    if (!outFile.is_open())
+    if ((wordNum = saveFile(tempFile, words)) == -1)
     {
-        cout << "can not creat file: " << tempFile << endl;
+        cout << RedOpen << "Can not creat file: " << tempFile << Reset << endl;
         return FERR;
     }
-    cout << "write " << saveFile(outFile, wordTable) << " words in file: " << fileName << ".\n";
+    cout << GreenOpen "Write " << wordNum << "words." Reset << endl;
 
-    outFile.close();
     remove(fileName.c_str());
     rename(tempFile.c_str(), fileName.c_str());
     return FINI;
@@ -54,6 +51,12 @@ sign option(void(f)())
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        cout << RedOpen "usage: set [-r/s:level] file" Reset << endl;
+        return UERR;
+    }
+
     bool resetMod = false;
     bool setMod = true;
     int opt;
@@ -86,6 +89,7 @@ int main(int argc, char *argv[])
             option(reset);
         }
     }
+
     else if (setMod)
     {
         for (int i = optind; i < argc; ++i)

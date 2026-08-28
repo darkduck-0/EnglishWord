@@ -1,7 +1,8 @@
 #include "winbuild.h"
 #include "sign.h"
-#include "fileOpt.h"
+#include "fileOrg.h"
 #include <unistd.h>
+#include "easyConsole.h"
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
@@ -9,6 +10,12 @@ using std::string, std::vector;
 
 int main(int argc, char *argv[])
 {
+    if (argc < 2)
+    {
+        cout << RedOpen "usage: typeIn [-adf:file] desFile" Reset << endl;
+        return UERR;
+    }
+
     bool append = false;
     bool screen = true;
     bool detail = false;
@@ -30,8 +37,8 @@ int main(int argc, char *argv[])
             detail = true;
             break;
         case '?':
-        cout << "usage: typeIn -a/f/d [source] destination\n";
-        return UERR;
+            cout << RedOpen "usage: typeIn [-adf:file] desFile" Reset << endl;
+            return UERR;
         default:
             break;
         }
@@ -47,14 +54,14 @@ int main(int argc, char *argv[])
         ifstream inFile(fileName);
         if (!inFile.is_open())
         {
-            cout << "can not open file: " << fileName << ".\n";
+            cout << RedOpen "Can not open file: " << fileName << Reset << endl;
             return FERR;
         }
         importWord(inFile, words);
     }
 
 #ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8); 
+    SetConsoleOutputCP(CP_UTF8);
     SetConsoleCP(CP_UTF8);
     cout << "utf-8 enable\n";
 #endif
@@ -63,19 +70,21 @@ int main(int argc, char *argv[])
     {
         for (auto &i : words)
             cout << i;
-        cout << "read " << words.size() << " words.\n";
+        cout << GreenOpen "Read " << words.size() << " words." Reset << endl;
     }
 
     ofstream outFile;
     fileName = argv[optind];
     outFile.open(fileName, append ? std::ios::app : std::ios::out);
 
-    if (!outFile.is_open())
+    int count;
+    if ((count = saveFile(fileName, words)) == -1)
     {
-        cout << "can not open file: " << fileName << ".\n";
+        cout << RedOpen "Can not open file: " << fileName << Reset << endl;
         return FERR;
     }
-    saveFile(outFile, words);
+    if (detail)
+        cout << GreenOpen "Write " << count << " words." Reset << endl;
 
     return FINI;
 }

@@ -1,7 +1,6 @@
 #include "fileOrg.h"
 #include <cstring>
-
-// #define NOBUG
+#define NOBUG
 
 using std::ifstream, std::ofstream;
 using std::stringstream, std::vector, std::string;
@@ -21,10 +20,10 @@ static int parseWord(string &source, vector<Word> &dest, size_t index)
         chi.clear();
         for (char c;(c = source[index++]) != '\t'; chi.push_back(c));
 
-        memcpy(&lastTime, &source[index], sizeof(lastTime));
-        index += sizeof(lastTime);
         memcpy(&level, &source[index], sizeof(level));
         index += sizeof(level);
+        memcpy(&lastTime, &source[index], sizeof(lastTime));
+        index += sizeof(lastTime);
         memcpy(&nextTime, &source[index], sizeof(nextTime));
         index += sizeof(nextTime);
 
@@ -36,7 +35,7 @@ static int parseWord(string &source, vector<Word> &dest, size_t index)
     return count;
 }
 
-int loadFile(string &fileName, vector<Word> &words)
+int loadFile(const char *fileName, vector<Word> &words)
 {
     static ifstream inFile;
 
@@ -55,6 +54,11 @@ int loadFile(string &fileName, vector<Word> &words)
     inFile.close();
 
     return parseWord(buffer, words, 0);
+}
+
+int loadFile(string &fileName, vector<Word> &word)
+{
+    return loadFile(fileName.c_str(), word);
 }
 
 int saveFile(string &fileName, vector<Word> &words)
