@@ -27,7 +27,7 @@ static int parseWord(string &source, vector<Word> &dest, size_t index)
         memcpy(&nextTime, &source[index], sizeof(nextTime));
         index += sizeof(nextTime);
 
-        dest.emplace_back(eng, chi, lastTime, level, nextTime);
+        dest.emplace_back(eng, chi, level, lastTime, nextTime);
         ++index;
         ++count;
     }
@@ -91,7 +91,7 @@ int importWord(std::istream &source, vector<Word> &wordTable)
         if (eng == "/back")
             break;
         source >> chi;
-        wordTable.emplace_back(eng, chi, 0, 0, 0);
+        wordTable.emplace_back(eng, chi);
     }
     return wordTable.size();
 }

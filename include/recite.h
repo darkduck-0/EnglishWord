@@ -2,6 +2,7 @@
 #define RECITE
 
 #include "word.h"
+#include "sign.h"
 #include <algorithm>
 #include "fileOrg.h"
 #include <random>

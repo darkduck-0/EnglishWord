@@ -1,5 +1,6 @@
 #ifndef SIGN
 #define SIGN
+
 enum sign
 {
     FINI = 0,
@@ -8,4 +9,5 @@ enum sign
     QUIT,
     REBOOT
 };
+
 #endif

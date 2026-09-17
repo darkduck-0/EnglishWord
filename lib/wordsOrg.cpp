@@ -1,35 +1,57 @@
 #include "wordsOrg.h"
+#include "word.h"
+#include "sign.h"
+#include <vector>
+#include <string>
+#include <algorithm>
+#include <chrono>
+
+static auto compare = [](Word *x, Word *y)
+{ return *x > *y; };
 
 using std::cout, std::cin, std::endl;
-using std::vector, std::string;
 using std::make_heap, std::pop_heap, std::push_heap;
+using std::vector, std::string;
 
-
-extern vector<Word *> waiting, ready, newWords;  // From start
-
+static vector<Word *> waiting, newWords; // From start
+vector <Word *> ready;
 
 void initOrg()
 {
+    extern vector<Word> words;
     waiting.reserve(1024);
     ready.reserve(1024);
-    make_heap(waiting.begin(), waiting.end(), compare);
-    waitingMove();
-    make_heap(ready.begin(), ready.end(), compare);
-}
+    newWords.reserve(1024);
 
+    for (auto &i : words)
+    {
+        if (i.isNew())
+            newWords.push_back(&i);
+        else if (i.timeUp())
+            ready.push_back(&i);
+        else
+            waiting.push_back(&i);
+    }
+
+    make_heap(waiting.begin(), waiting.end(), compare);
+    make_heap(ready.begin(), ready.end(), compare);
+    std::reverse(newWords.begin(), newWords.end());
+}
 
 static void moveWord(vector<Word *> &a, vector<Word *> &b)
 {
+    if (a.empty())
+        return;
     b.push_back(a.front());
     push_heap(b.begin(), b.end(), compare);
     pop_heap(a.begin(), a.end(), compare);
     a.pop_back();
 }
 
-
-void readyMove()
+static void readyMove()
 {
-    if (ready.front()->timeUp())
+    if (ready.empty()) return;
+    if (!ready.front()->timeUp())
         moveWord(ready, waiting);
     else
     {
@@ -38,9 +60,15 @@ void readyMove()
     }
 }
 
-
-void waitingMove()
+static void waitingMove()
 {
-    while (waiting.front()->timeUp())
+    while (!waiting.empty() && waiting.front()->timeUp())
         moveWord(waiting, ready);
+}
+
+int maintain()
+{
+    readyMove();
+    waitingMove();
+    return ready.size();
 }

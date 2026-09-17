@@ -22,9 +22,10 @@ const static uint64_t levelSwitch[MAXLEVEL] = {
     60 * DAY,
 };
 
-Word::Word(std::string e, std::string c, time_t ct = 0,
-           int16_t l = 0, time_t nt = 0)
-    : eng(e), chi(c), lastTime(ct), level(l), nextTime(nt) {}
+Word::Word(std::string e, std::string c, int16_t l,
+           time_t ct, time_t nt, int16_t err)
+    : eng(e), chi(c), lastTime(ct), level(l),
+      nextTime(nt), errTmp(err) {}
 
 bool Word::upGrade(int16_t delta)
 {
@@ -40,6 +41,11 @@ bool Word::deGrade(int16_t delta)
     bool result = level < 0;
     level = result ? 0 : level;
     return result;
+}
+
+bool Word::isNew() const
+{
+    return !lastTime;
 }
 
 void Word::updateTime()

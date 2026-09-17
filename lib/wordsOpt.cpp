@@ -1,9 +1,11 @@
 #include "wordsOpt.h"
+#include "word.h"
+#include "easyConsole.h"
 #include <vector>
+#include <iostream>
 #include <random>
 #include <thread>
 #include <algorithm>
-#include "easyConsole.h"
 
 std::mt19937 gen(std::random_device{}());
 std::random_device rd;
@@ -11,30 +13,33 @@ std::random_device rd;
 using std::cout, std::cin, std::endl;
 using std::string, std::vector;
 
+static const string noRightOpt = GreenOpen "No correct option.\n" Reset;
+static const string misMemOpt = RedOpen "Honestly, I misremembered.\n" Reset;
 static vector<const string *> opts, errWordTemp, errWordTotal, chis;
-static string noRightOpt = GreenOpen "No correct option.\n" Reset;
-static string misMemOpt = RedOpen "Honestly, I misremembered.\n" Reset;
-static int rightOpt;
 static uint32_t errWordCount;
+static int rightOpt;
 
 extern size_t optSize; // from start
+extern vector<Word *> ready;
+
+void countDown(float t);
 
 void initOpt()
 {
-    extern vector<Word> words;
     chis.reserve(1024);
-    errWordTemp.resize(10);
     errWordTotal.reserve(1024);
-
+    errWordTemp.resize(10);
     opts.resize(optSize + 1);
+
     opts[optSize - 1] = &noRightOpt;
     opts[optSize] = &misMemOpt;
 
+    extern vector<Word> words;
     for (auto &i : words)
         chis.push_back(&(i.chi));
 }
 
-void randomOpt(string *rightChi)
+void randomOpt()
 {
     static int index = 0;
     if (index + optSize >= chis.size())
@@ -47,6 +52,7 @@ void randomOpt(string *rightChi)
     bool noright = rand & 0x01;
     rightOpt = rand % (optSize - 1);
 
+    const string *rightChi = &ready.front()->chi;
     size_t i = 0;
     if (!noright)
         opts[i++] = rightChi;
@@ -60,60 +66,57 @@ void randomOpt(string *rightChi)
         opts[i++] = chis[index];
     }
 
-    const string *t = opts[rightOpt];
+    rightChi = opts[rightOpt];
     opts[rightOpt] = opts[0];
-    opts[0] = t;
+    opts[0] = rightChi;
     ++rightOpt;
 }
 
-void showOpt(string *eng)
+void showOpt()
 {
-    cout << Clear << *eng << endl;
+    cout << Clear << ready.front()->eng << endl;
     for (size_t i = 0; i <= optSize; ++i)
-        cout << i + 1 << ". " << *opts[i] << endl;
+        cout << '[' << i + 1 << "] " << *opts[i] << endl;
 }
 
-sign judge(Word *targetWord)
+sign judge()
 {
-    int userOpt;
-    if (scanf("%d", &userOpt) != 1)
+    string cmd;
+    for (;;)
     {
-        string cmd;
         cin >> cmd;
-        if (cmd == "/back")
+        if (cmd.size() > 1)
+        {
+            cout << "\033[1A\033[2K\r";
+            continue;
+        }
+
+        int userOpt = cmd.front();
+        if (userOpt == rightOpt + '0')
+            return FINI;
+        else if (userOpt == 'q')
             return QUIT;
-        return REBOOT;
+        else
+        {
+            cout << "\033[1A\033[2K\r";
+            continue;
+        }
+
+        return UERR;
     }
-
-    if (userOpt < 1 || userOpt > optSize + 1)
-        return REBOOT;
-
-    if (userOpt == rightOpt)
-    {
-        targetWord->upGrade();
-        cout << GreenOpen "corract." Reset;
-        targetWord->coutLevel() << endl;
-        std::this_thread::sleep_for(std::chrono::milliseconds(750));
-        return FINI;
-    }
-
-    // ++errWordCount;
-
-    cout << Clear;
-    cout << RedOpen "wrong." Reset;
-    targetWord->coutLevel() << '\n';
-
-    cout << targetWord->eng << ": " << targetWord->chi << '\n';
-    cout << "I know." << endl;
-
-    return UERR;
 }
 
-sign know(Word *targetWord)
+std::thread countTime(countDown);
+
+sign function1()
 {
-    cout << targetWord->eng << endl;
-    cout << "1. " GreenOpen "I know." Reset << endl;
-    cout << "2. " RedOpen "I do not konw." Reset << endl;
+    showOpt();
+}
+sign know()
+{
+    cout << ready.front()->eng << endl;
+    cout << "[1] " GreenOpen "I know." Reset << endl;
+    cout << "[2] " RedOpen "I do not konw." Reset << endl;
 
     while (true)
     {
@@ -123,7 +126,30 @@ sign know(Word *targetWord)
             return FINI;
         else if (cmd == "2")
             return UERR;
-        else if (cmd == "/back")
+        else if (cmd == "q")
             return QUIT;
     }
+}
+
+void correct()
+{
+    Word *targetWord = ready.front();
+    targetWord->upGrade();
+    targetWord->updateTime();
+    cout << GreenOpen "Correct." Reset "\t";
+    targetWord->coutLevel() << endl;
+    std::this_thread::sleep_for(std::chrono::milliseconds(750));
+}
+
+void wrong()
+{
+    Word *targetWord = ready.front();
+    targetWord->deGrade();
+    targetWord->updateTime();
+    cout << Clear RedOpen "Wrong." Reset "\n";
+    targetWord->coutLevel() << '\n';
+    cout << targetWord->eng << ": " << targetWord->chi << '\n';
+    cout << "I know." << endl;
+    string cmd;
+    cin >> cmd;
 }

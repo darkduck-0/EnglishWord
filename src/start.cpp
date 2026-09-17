@@ -10,25 +10,28 @@
 #include <algorithm>
 #include <fstream>
 #include "easyConsole.h"
+#include <thread>
 
+
+#define optNum 4
 
 using std::cout, std::cin, std::endl;
-using std::vector, std::string;
 using std::ifstream, std::ofstream;
-
+using std::vector, std::string;
 
 sign startInit();
 
-
 string fileName;
-ifstream inFile;
-ofstream outFile;
-std::stringstream inFileStream;
 vector<Word> words;
+size_t optSize = 4;
 
-
-int main(int argc, char *argv[])
+int main(int argc, const char *argv[])
 {
+#ifdef _WIN32
+    SetConsoleOutputCP(CP_UTF8);
+    SetConsoleCP(CP_UTF8);
+#endif
+
     if (argc < 2)
     {
         cout << "usage: start file" << endl;
@@ -36,37 +39,46 @@ int main(int argc, char *argv[])
     }
 
     fileName = argv[1];
-    inFile.open(fileName);
-    if (!inFile.is_open())
+
+    int total = loadFile(fileName, words);
+    if (total < optSize)
     {
-        cout << RedOpen "Can not open file: " << fileName << "." Reset << endl;
-        return FERR;
-    }
-
-    inFileStream << inFile.rdbuf();
-    inFile.close();
-    loadFile(inFileStream, words);
-
-    if (startInit())
+        cout << RedOpen "Too few words.\n" Reset << endl;
         return UERR;
-    
-    while (true)
-    {
     }
-    
-}
-
-
-sign startInit()
-{
-#ifdef _WIN32
-    SetConsoleOutputCP(CP_UTF8); 
-    SetConsoleCP(CP_UTF8);
-#endif
-
-    cout << HideCursor;
     initOrg();
     initOpt();
 
-    
+    for (; maintain() != 0;)
+    {
+        switch (know() != FINI)
+        {
+        case FINI:
+            break;
+        case UERR:
+            goto wrong;
+        case QUIT:
+            goto quit;
+        }
+        randomOpt();
+        showOpt();
+
+        switch (judge())
+        {
+        case QUIT:
+            goto quit;
+        case FINI:
+            break;
+        case UERR:
+            goto wrong;
+        }
+        correct();
+        continue;
+    wrong:
+        wrong();
+    }
+quit:
+    saveFile(fileName, words);
+    coutWrongWords();
+    return FINI;
 }
