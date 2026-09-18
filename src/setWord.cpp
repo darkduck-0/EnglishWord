@@ -2,12 +2,13 @@
 #include <unistd.h>
 #include "sign.h"
 #include "easyConsole.h"
+#include <ctime>
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
 using std::string, std::vector;
 
-vector<Word> words;
+extern vector<Word> words;
 string fileName;
 int16_t level;
 

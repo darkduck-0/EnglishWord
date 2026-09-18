@@ -12,18 +12,15 @@
 #include "easyConsole.h"
 #include <thread>
 
-
 #define optNum 4
 
 using std::cout, std::cin, std::endl;
 using std::ifstream, std::ofstream;
 using std::vector, std::string;
 
-sign startInit();
-
 string fileName;
-vector<Word> words;
-size_t optSize = 4;
+extern vector<Word> words;
+extern size_t optSize;
 
 int main(int argc, const char *argv[])
 {
@@ -34,7 +31,7 @@ int main(int argc, const char *argv[])
 
     if (argc < 2)
     {
-        cout << "usage: start file" << endl;
+        cout << RedOpen "usage: start file" Reset << endl;
         return UERR;
     }
 
@@ -49,9 +46,9 @@ int main(int argc, const char *argv[])
     initOrg();
     initOpt();
 
-    for (; maintain() != 0;)
+    for (; maintain();)
     {
-        switch (know() != FINI)
+        switch (know())
         {
         case FINI:
             break;
@@ -79,6 +76,5 @@ int main(int argc, const char *argv[])
     }
 quit:
     saveFile(fileName, words);
-    coutWrongWords();
     return FINI;
 }

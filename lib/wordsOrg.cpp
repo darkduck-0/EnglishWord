@@ -13,8 +13,16 @@ using std::cout, std::cin, std::endl;
 using std::make_heap, std::pop_heap, std::push_heap;
 using std::vector, std::string;
 
-static vector<Word *> waiting, newWords; // From start
-vector <Word *> ready;
+static vector<Word *> waiting, newWords;
+vector<Word *> ready;
+
+void showProcess()
+{
+    extern vector<Word> words;
+    cout << "Total: " << words.size() << "\t";
+    cout << "Ready: " << ready.size() << "\t";
+    cout << "New: " << newWords.size() << endl;
+}
 
 void initOrg()
 {
@@ -40,8 +48,6 @@ void initOrg()
 
 static void moveWord(vector<Word *> &a, vector<Word *> &b)
 {
-    if (a.empty())
-        return;
     b.push_back(a.front());
     push_heap(b.begin(), b.end(), compare);
     pop_heap(a.begin(), a.end(), compare);
@@ -50,7 +56,8 @@ static void moveWord(vector<Word *> &a, vector<Word *> &b)
 
 static void readyMove()
 {
-    if (ready.empty()) return;
+    if (ready.empty())
+        return;
     if (!ready.front()->timeUp())
         moveWord(ready, waiting);
     else

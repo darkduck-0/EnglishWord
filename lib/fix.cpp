@@ -2,4 +2,4 @@
 #include "word.h"
 using std::vector;
 vector<Word> words;
-size_t optSize;
+size_t optSize = 4;

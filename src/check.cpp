@@ -31,7 +31,7 @@ int main(int argc, const char *argv[])
         cout << argv[i] << ":\n";
         for (auto &k : words)
             cout << k;
-        cout << GreenOpen "Read " << words.size() << " words." << endl;
+        cout << GreenOpen "Read " << words.size() << " words." << Reset << endl;
     }
 
     return FINI;

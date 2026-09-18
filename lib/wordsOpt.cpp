@@ -13,16 +13,16 @@ std::random_device rd;
 using std::cout, std::cin, std::endl;
 using std::string, std::vector;
 
-static const string noRightOpt = GreenOpen "No correct option.\n" Reset;
-static const string misMemOpt = RedOpen "Honestly, I misremembered.\n" Reset;
+static const string noRightOpt = GreenOpen "No correct option." Reset;
+static const string misMemOpt = RedOpen "Honestly, I misremembered." Reset;
 static vector<const string *> opts, errWordTemp, errWordTotal, chis;
 static uint32_t errWordCount;
 static int rightOpt;
 
-extern size_t optSize; // from start
-extern vector<Word *> ready;
+extern size_t optSize;       // from start
+extern vector<Word *> ready; // from wordsOrg
 
-void countDown(float t);
+extern void showProcess();
 
 void initOpt()
 {
@@ -48,12 +48,13 @@ void randomOpt()
         std::shuffle(chis.begin(), chis.end(), gen);
     }
 
+    const string *rightChi = &ready.front()->chi;
+    size_t i = 0;
+
     uint32_t rand = rd();
     bool noright = rand & 0x01;
     rightOpt = rand % (optSize - 1);
 
-    const string *rightChi = &ready.front()->chi;
-    size_t i = 0;
     if (!noright)
         opts[i++] = rightChi;
     else
@@ -66,10 +67,13 @@ void randomOpt()
         opts[i++] = chis[index];
     }
 
+    if (!noright)
+    {
     rightChi = opts[rightOpt];
     opts[rightOpt] = opts[0];
     opts[0] = rightChi;
     ++rightOpt;
+    }
 }
 
 void showOpt()
@@ -99,24 +103,18 @@ sign judge()
         else
         {
             cout << "\033[1A\033[2K\r";
-            continue;
+            return UERR;
         }
-
-        return UERR;
     }
 }
 
-std::thread countTime(countDown);
-
-sign function1()
-{
-    showOpt();
-}
 sign know()
 {
+    cout << Clear;
+    showProcess();
     cout << ready.front()->eng << endl;
     cout << "[1] " GreenOpen "I know." Reset << endl;
-    cout << "[2] " RedOpen "I do not konw." Reset << endl;
+    cout << "[2] " RedOpen "I do not know." Reset << endl;
 
     while (true)
     {
@@ -128,6 +126,7 @@ sign know()
             return UERR;
         else if (cmd == "q")
             return QUIT;
+        cout << "\033[1A\033[2K\r";
     }
 }
 
@@ -150,6 +149,6 @@ void wrong()
     targetWord->coutLevel() << '\n';
     cout << targetWord->eng << ": " << targetWord->chi << '\n';
     cout << "I know." << endl;
-    string cmd;
-    cin >> cmd;
+    char c;
+    cin >> c;
 }

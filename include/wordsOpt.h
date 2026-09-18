@@ -10,4 +10,6 @@ void showOpt();
 sign know();
 sign judge();
 
+void correct();
+void wrong();
 #endif

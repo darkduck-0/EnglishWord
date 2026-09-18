@@ -79,6 +79,7 @@ int saveFile(string &fileName, vector<Word> &words)
         ++count;
     }
 
+    outFile.close();
     return count;
 }
 
